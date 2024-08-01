@@ -18,8 +18,7 @@ SYSTEM_DATA = "data.json"
 
 class SerialComm():
     """Serial Interface"""
-    zone = None
-    zone = None
+    line = None
 
     def __init__(self, port, id=None):
         """Initialize the Serial port."""
@@ -53,89 +52,29 @@ class SerialComm():
         if self.writer is None:
             await self.serial_open()
         
-        _LOGGER.error(f'Sent Message {message}')
         self.writer.write(message.encode('utf-8'))
-        _LOGGER.warn(f'Awaited Message {message.encode('utf-8')}')
         line = await self.reader.readline()
-        _LOGGER.warn(f'Read Message {line}')
-
+        line = await self.reader.readline()
+        return line
+    
     async def serial_read(self):
         """Read the data from the port."""
-        logged_error = False
+        if self.reader is None:
+            await self.serial_open()
+
         while True:
-            if self.reader is None:
-                await self.serial_open()
+            try:
+                line = await self.reader.readline()
+            except SerialException as exc:
+                _LOGGER.exception(
+                    "Error while reading serial device %s: %s", self._port, exc
+                )
+                await self._handle_error()
+                break
+            else:
+                self.line = line.decode("utf-8").strip()
 
-            while True:
-                try:
-                    line = await self.reader.readline()
-                except SerialException as exc:
-                    _LOGGER.exception(
-                        "Error while reading serial device %s: %s", self._port, exc
-                    )
-                    await self._handle_error()
-                    break
-                else:
-                    line = line.decode("utf-8").strip()
-
-                    try:
-                        data = json.loads(line)
-                    except ValueError:
-                        pass
-                    else:
-                        if isinstance(data, dict):
-                            self._attributes = data
-
-                    Type = line[4:6]
-                    Zone = line[6:9]
-                    User = line[9:12]
-                    Part = line[12:13]
-                    MM = line[13:15]
-                    HH = line[15:17]
-                    DD = line[17:19]
-                    mm = line[19:21]
-                    YY = line[21:23]
-        
-                    #Armed/Disarmed
-                    if Type == "07":
-                        self.armed = "Armed"
-                        self.armedIco = "mdi:lock"
-                        self.user = "Armed by:" + str(int(User))
-                        
-                    if Type == "08":
-                        self.armed = "Disarmed"
-                        self.armedIco = "mdi:lock-open"
-                        self.user = "Disarmed by:" + str(int(User))
-                        
-                    if Type == "07" or Type == "08":
-                        self.tStampA = str(HH) + ":" + str(MM)
-                        self.dStampA = str(mm) + "/" + str(DD) + "/" + str(YY) 
-                        line = self._state
-
-                    #Zone Status
-                    if Type == "F5":
-                        Zone = int(Zone)
-                        self.zone = "Fault: " + self._sys_data["zones"][str(Zone)]
-                        self.zoneIco = "mdi:alarm-light-outline"
-
-                    if Type == "F6":
-                        Zone = int(Zone)
-                        self.zone = "Restore: " + self._sys_data["zones"][str(Zone)]
-                        self.zoneIco = "mdi:alarm-light-off-outline"
-
-                    if Type == "F5" or Type == "F6":
-                        self.tStampF = str(HH) + ":" + str(MM)
-                        self.dStampF = str(mm) + "/" + str(DD) + "/" + str(YY) 
-                        line = self._state
-
-                    if self._template is not None:
-                        line = self._template.async_render_with_possible_json_value(
-                            line
-                        )
-
-                    _LOGGER.debug("Received: %s", line)
-                    self._state = line
-                    self.async_write_ha_state()
+                return self.line
 
     async def serial_open(self):
         logged_error = False
