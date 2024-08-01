@@ -8,15 +8,17 @@ from homeassistant.const import (
 from homeassistant.helpers.entity import DeviceInfo
 
 from .const import CONNECTION, DOMAIN
+from .helpers import calc_checksum
 
+from pathlib import Path
+import json
 import logging
 _LOGGER = logging.getLogger(__name__)
 ICON = "mdi:security"
 
 CONF_AWAY_MODE_NAME = "away"
-
+SYSTEM_DATA = "data.json"
 CONST_ALARM_CONTROL_PANEL_NAME = "Alarm Panel"
-
 
 async def async_setup_entry(
     hass, config_entry, async_add_entities, discovery_info=None
@@ -45,6 +47,12 @@ class vistaBaseStation(AlarmControlPanelEntity):
             model=CONST_ALARM_CONTROL_PANEL_NAME,
             sw_version=1.0,
         )
+        
+        base_path = Path(__file__).parent
+        path = f'{base_path}/{SYSTEM_DATA}'
+        f = open (path, "r")
+        self.sys_data = json.loads(f.read())
+
 
     async def async_update(self):
         """Update the state of the device."""
@@ -64,14 +72,29 @@ class vistaBaseStation(AlarmControlPanelEntity):
     async def async_alarm_disarm(self, code=None):
         """Send disarm command."""
         #await self.serial_client.disarm()
-        _LOGGER.error(f'{code} DISARM')
-        await self.serial_client.serial_send('0Ead041568002E' + '\r\n')
-        self._attr_state = STATE_ALARM_DISARMED
+        if code.len() != 4:
+            self._attr_state = self._attr_state
+            _LOGGER.warn(f'incorrect code length')
+        else:
+            _LOGGER.error(f'{code} DISARM')
+
+            id = self.sys_data['codes'][str(code)]
+            f'0Ead{id}{code}'
+            message = calc_checksum(code)    
+            await self.serial_client.serial_send('message' + '\r\n')
+            self._attr_state = STATE_ALARM_DISARMED
 
     async def async_alarm_arm_away(self, code=None):
         """Send arm away command. Uses custom mode."""
-        #await self.serial_client.arm()
-        #await self.serial_client.set_active_profile(CONF_AWAY_MODE_NAME)
-        _LOGGER.error(f'{code} ARM')
-        await self.serial_client.serial_send('0Eaa0415680031' + '\r\n')
-        self._attr_state = STATE_ALARM_ARMED_AWAY
+        #await self.serial_client.disarm()
+        if code.len() != 4:
+            self._attr_state = self._attr_state
+            _LOGGER.warn(f'incorrect code length')
+        else:
+            _LOGGER.error(f'{code} ARM')
+
+            id = self.sys_data['codes'][str(code)]
+            f'0Eaa{id}{code}'
+            message = calc_checksum(code)    
+            await self.serial_client.serial_send('message' + '\r\n')
+            self._attr_state = STATE_ALARM_ARMED_AWAY
