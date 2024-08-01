@@ -29,3 +29,15 @@ def list_ports():
         except (OSError, serial.SerialException):
             pass
     return result
+
+def calc_checksum(string):
+    #8 bit modulo 256 checksum
+    mod = sum(string.encode('ascii')) % 256
+    #Find the compliment
+    mod = 256 - mod;
+    #make it a all caps 2 digit string
+    mod = str(hex(mod)).upper()[2:]
+    if len(mod) == 1:
+        mod = f'0{mod}'
+
+    return string + mod 

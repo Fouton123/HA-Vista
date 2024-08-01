@@ -32,6 +32,8 @@ class SerialComm():
         self._dsrdtr = DEFAULT_DSRDTR
         self._serial_loop_task = None
         self._attributes = None
+        self.reader = None
+        self.writer = None
 
         base_path = Path(__file__).parent
         
@@ -46,30 +48,43 @@ class SerialComm():
     def id(self):
         return id
 
-    async def serial_read(self, device, baudrate, bytesize, parity, stopbits, xonxoff, rtscts, dsrdtr, **kwargs):
-        """Read the data from the port."""
+    async def open_serial(self, device, baudrate, bytesize, parity, stopbits, xonxoff, rtscts, dsrdtr, **kwargs):
         logged_error = False
-        while True:
-            try:
-                reader, _ = await serial_asyncio.open_serial_connection(url=device, baudrate=baudrate, bytesize=bytesize, parity=parity, stopbits=stopbits, xonxoff=xonxoff, rtscts=rtscts, dsrdtr=dsrdtr, **kwargs)
-
-            except SerialException as exc:
+        try:
+            self.reader, self.writer, _ = await serial_asyncio.open_serial_connection(url=self._port, baudrate=self._baudrate, bytesize=self._bytesize, parity=self._parity, stopbits=self._stopbits, xonxoff=self._xonxoff, rtscts=self._rtscts, dsrdtr=self._dsrdtr)
+        except SerialException as exc:
                 if not logged_error:
                     _LOGGER.exception(
                         "Unable to connect to the serial device %s: %s. Will retry",
-                        device,
+                        self._port,
                         exc,
                     )
                     logged_error = True
                 await self._handle_error()
+        else:
+            _LOGGER.info("Serial device %s connected", self._port)
+
+    async def serial_send(self, message):
+        if self.writer is None:
+            self.serial_open()
+        else:
+            self.writer.write(message)
+
+
+
+    async def serial_read(self):
+        """Read the data from the port."""
+        logged_error = False
+        while True:
+            if self.reader is None:
+                self.serial_open()
             else:
-                _LOGGER.info("Serial device %s connected", device)
                 while True:
                     try:
-                        line = await reader.readline()
+                        line = await self.reader.readline()
                     except SerialException as exc:
                         _LOGGER.exception(
-                            "Error while reading serial device %s: %s", device, exc
+                            "Error while reading serial device %s: %s", self._port, exc
                         )
                         await self._handle_error()
                         break
