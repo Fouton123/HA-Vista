@@ -138,7 +138,7 @@ class SerialComm():
     async def serial_open(self):
         logged_error = False
         try:
-            self.reader, self.writer, _ = await serial_asyncio.open_serial_connection(url=self._port, baudrate=self._baudrate, bytesize=self._bytesize, parity=self._parity, stopbits=self._stopbits, xonxoff=self._xonxoff, rtscts=self._rtscts, dsrdtr=self._dsrdtr)
+            self.reader, self.writer = await serial_asyncio.open_serial_connection(url=self._port, baudrate=self._baudrate, bytesize=self._bytesize, parity=self._parity, stopbits=self._stopbits, xonxoff=self._xonxoff, rtscts=self._rtscts, dsrdtr=self._dsrdtr)
         except SerialException as exc:
                 if not logged_error:
                     _LOGGER.exception(
