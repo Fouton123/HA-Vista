@@ -53,7 +53,7 @@ class SerialComm():
             await self.serial_open()
         
         _LOGGER.error(f'Sent Message {message}')
-        await self.writer.write(message.encode('utf-8'))
+        self.writer.write(message.encode('utf-8'))
         _LOGGER.warn(f'Awaited Message {message.encode('utf-8')}')
 
 

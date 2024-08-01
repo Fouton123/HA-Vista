@@ -65,7 +65,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         """Send disarm command."""
         #await self.serial_client.disarm()
         _LOGGER.error(f'{code} DISARM')
-        await self.serial_client.serial_send('0Ead042568002D')
+        await self.serial_client.serial_send('0Ead042568002D' + '\r\n')
         self._attr_state = STATE_ALARM_DISARMED
 
     async def async_alarm_arm_away(self, code=None):
