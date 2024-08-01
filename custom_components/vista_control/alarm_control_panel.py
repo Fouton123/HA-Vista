@@ -72,7 +72,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
     async def async_alarm_disarm(self, code=None):
         """Send disarm command."""
         #await self.serial_client.disarm()
-        if code.len() != 4:
+        if len(code) != 4:
             self._attr_state = self._attr_state
             _LOGGER.warn(f'incorrect code length')
         else:
@@ -87,7 +87,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
     async def async_alarm_arm_away(self, code=None):
         """Send arm away command. Uses custom mode."""
         #await self.serial_client.disarm()
-        if code.len() != 4:
+        if len(code) != 4:
             self._attr_state = self._attr_state
             _LOGGER.warn(f'incorrect code length')
         else:
