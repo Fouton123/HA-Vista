@@ -48,7 +48,7 @@ class SerialComm():
     def id(self):
         return id
 
-    async def open_serial(self, device, baudrate, bytesize, parity, stopbits, xonxoff, rtscts, dsrdtr, **kwargs):
+    async def serial_open(self, device, baudrate, bytesize, parity, stopbits, xonxoff, rtscts, dsrdtr, **kwargs):
         logged_error = False
         try:
             self.reader, self.writer, _ = await serial_asyncio.open_serial_connection(url=self._port, baudrate=self._baudrate, bytesize=self._bytesize, parity=self._parity, stopbits=self._stopbits, xonxoff=self._xonxoff, rtscts=self._rtscts, dsrdtr=self._dsrdtr)
