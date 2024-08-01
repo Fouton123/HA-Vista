@@ -51,10 +51,10 @@ class SerialComm():
     async def serial_send(self, message):
         if self.writer is None:
             await self.serial_open()
-
+        
         _LOGGER.error(f'Sent Message {message}')
-        await self.writer.write(message)
-        _LOGGER.error(f'Awaited Message {message}')
+        await self.writer.write(message.encode('utf-8'))
+        _LOGGER.warn(f'Awaited Message {message.encode('utf-8')}')
 
 
     async def serial_read(self):
