@@ -166,10 +166,10 @@ class VistaSensor(SensorEntity):
         
     async def sensorUpdate(self, **kwargs):
         msg = decode_message(self._serialSensor.line)
-        if self._type == msg[0]:
-            self._state = msg[1]
-        else:
-            self._state = self._state
+        #if self._type == msg[0]:
+        self._state = msg[1]
+        #else:
+        #    self._state = self._state
 
 
     @callback
@@ -201,20 +201,6 @@ class VistaSensor(SensorEntity):
 
     async def async_update(self):
         """Retrieve latest state."""
-        if self._sensor == "Zone":
-            self.retVal = self._serialSensor.zone
-        if self._sensor == "User":
-            self.retVal = self._serialSensor.user
-        if self._sensor == "Armed":
-            self.retVal = self._serialSensor.armed
-        if self._sensor == "TimeA":
-            self.retVal = self._serialSensor.tStampA
-        if self._sensor == "DateA":
-            self.retVal = self._serialSensor.dStampA
-        if self._sensor == "TimeF":
-            self.retVal = self._serialSensor.tStampF
-        if self._sensor == "DateF":
-            self.retVal = self._serialSensor.dStampF
-
-        self._state = self.retVal
+        msg = decode_message(self._serialSensor.line)
+        self._state = msg[1]
 
