@@ -69,7 +69,8 @@ class SerialComm():
             self.serial_open()
         else:
             _LOGGER.error(f'Sent Message {message}')
-            self.writer.write(message)
+            await self.writer.write(message)
+            _LOGGER.error(f'Awaited Message {message}')
 
 
 
