@@ -20,9 +20,6 @@ async def async_setup_entry(
 
     sensor = hass.data[DOMAIN][config_entry.entry_id][CONNECTION]
 
-    if (value_template := config_entry.get(CONF_VALUE_TEMPLATE)) is not None:
-        value_template.hass = hass
-
     zoneSensor = ZoneSensor("Zone Status", "Zone", value_template, sensor)
     userSensor = ZoneSensor("User ID", "User", value_template, sensor)
     armedSensor = ZoneSensor("Alarm Status", "Armed", value_template, sensor)
