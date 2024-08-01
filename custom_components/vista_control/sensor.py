@@ -65,7 +65,7 @@ class ZoneSensor(SensorEntity):
         )
         
     async def sensorUpdate(self, **kwargs):
-
+        self._serialSensor.serial_read()
         # while True:
         if self._sensor == "Zone":
             self.retVal = self._serialSensor.zone
@@ -109,15 +109,15 @@ class ZoneSensor(SensorEntity):
     def icon(self):
         """Return the icon to use in the frontend."""
         if self._sensor == "Zone":
-            ret = self._serialSensor._zoneIco
+            ret = self._serialSensor.zoneIco
         if self._sensor == "User":
-            ret = self._serialSensor._userIco
+            ret = self._serialSensor.userIco
         if self._sensor == "Armed":
-            ret = self._serialSensor._armedIco
+            ret = self._serialSensor.armedIco
         if self._sensor == "TimeA" or  self._sensor == "TimeF":
-            ret = self._serialSensor._tStampIco
+            ret = self._serialSensor.tStampIco
         if self._sensor == "DateA" or  self._sensor == "DateF":
-            ret = self._serialSensor._dStampIco
+            ret = self._serialSensor.dStampIco
         return ret
         
 

@@ -18,6 +18,8 @@ SYSTEM_DATA = "data.json"
 
 class SerialComm():
     """Serial Interface"""
+    zone = None
+    zone = None
 
     def __init__(self, port, id=None):
         """Initialize the Serial port."""
@@ -39,7 +41,12 @@ class SerialComm():
         path = f'{base_path}/{SYSTEM_DATA}'
         f = open (path, "r")
         self._sys_data = json.loads(f.read())
-        
+    
+    async def async_added_to_hass(self):
+        """Handle when an entity is about to be added to Home Assistant."""
+        self._serial_loop_task = self.hass.loop.create_task(
+            self.serial_read()
+        )
 
     def exists(self):
         """Return if serial port exists"""
