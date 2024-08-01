@@ -34,8 +34,7 @@ class SerialComm():
         self._attributes = None
 
         base_path = Path(__file__).parent
-        _LOGGER.error(f'{base_path} / {SYSTEM_DATA}')
-        self._sys_data = json.loads(f'{base_path} / {SYSTEM_DATA}')
+        self._sys_data = json.loads(f'{base_path}/{SYSTEM_DATA}')
 
 
     def exists(self):
