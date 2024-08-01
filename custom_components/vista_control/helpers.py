@@ -43,8 +43,9 @@ def calc_checksum(string):
     return string + mod 
 
 def decode_message(message):
-
-    if len(message) > 0:
+    if message is None:
+        return None
+    else:
         Type = message[4:6]
         Zone = message[6:9]
         User = message[9:12]
@@ -56,6 +57,4 @@ def decode_message(message):
         YY = message[21:23]
 
         values = [Type, Zone, User, Part]
-    else:
-        values = None
-    return values 
+        return values 
