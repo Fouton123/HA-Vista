@@ -37,7 +37,7 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
                 self._abort_if_unique_id_configured(
                     updates={
-                        serial_port: user_input['serial'],
+                        serial_port: user_input[CONF_PORT],
                     }
                 )
 
