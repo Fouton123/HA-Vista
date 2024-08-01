@@ -48,22 +48,6 @@ class SerialComm():
     def id(self):
         return id
 
-    async def serial_open(self, device, baudrate, bytesize, parity, stopbits, xonxoff, rtscts, dsrdtr, **kwargs):
-        logged_error = False
-        try:
-            self.reader, self.writer, _ = await serial_asyncio.open_serial_connection(url=self._port, baudrate=self._baudrate, bytesize=self._bytesize, parity=self._parity, stopbits=self._stopbits, xonxoff=self._xonxoff, rtscts=self._rtscts, dsrdtr=self._dsrdtr)
-        except SerialException as exc:
-                if not logged_error:
-                    _LOGGER.exception(
-                        "Unable to connect to the serial device %s: %s. Will retry",
-                        self._port,
-                        exc,
-                    )
-                    logged_error = True
-                await self._handle_error()
-        else:
-            _LOGGER.info("Serial device %s connected", self._port)
-
     async def serial_send(self, message):
         if self.writer is None:
             self.serial_open()
@@ -151,3 +135,19 @@ class SerialComm():
                         _LOGGER.debug("Received: %s", line)
                         self._state = line
                         self.async_write_ha_state()
+
+    async def serial_open(self, device, baudrate, bytesize, parity, stopbits, xonxoff, rtscts, dsrdtr, **kwargs):
+        logged_error = False
+        try:
+            self.reader, self.writer, _ = await serial_asyncio.open_serial_connection(url=self._port, baudrate=self._baudrate, bytesize=self._bytesize, parity=self._parity, stopbits=self._stopbits, xonxoff=self._xonxoff, rtscts=self._rtscts, dsrdtr=self._dsrdtr)
+        except SerialException as exc:
+                if not logged_error:
+                    _LOGGER.exception(
+                        "Unable to connect to the serial device %s: %s. Will retry",
+                        self._port,
+                        exc,
+                    )
+                    logged_error = True
+                await self._handle_error()
+        else:
+            _LOGGER.info("Serial device %s connected", self._port)
