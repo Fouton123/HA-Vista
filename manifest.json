@@ -1,0 +1,10 @@
+{
+  "domain": "vista_control",
+  "name": "Vista Control",
+  "documentation": "",
+  "requirements": ["pyserial-asyncio==0.6"],
+  "config_flow": true,
+  "codeowners": ["@fellowship"],
+  "iot_class": "local_polling",
+  "loggers": ["vista"]
+}

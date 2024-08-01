@@ -1,0 +1,8 @@
+"""Constants for vista component."""
+DOMAIN = "vista_control"
+SERVERS = "servers"
+DEVICES = "devices"
+ENTITIES = "entities"
+SERVICE_UPDATE = "update"
+ATTRIBUTION = "Honeywell"
+CONNECTION = "connection"
