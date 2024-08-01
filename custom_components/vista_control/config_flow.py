@@ -6,8 +6,7 @@ from homeassistant.const import CONF_PORT
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .serial import SerialComm
-from .const import DOMAIN, SERVER_URL
-from .helpers import generate_url
+from .const import DOMAIN
 
 DEFAULT_PORT = 8090
 
