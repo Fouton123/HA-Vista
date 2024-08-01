@@ -1,5 +1,5 @@
 """Support for Agent DVR Alarm Control Panels."""
-from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity
+from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity, FORMAT_NUMBER
 from homeassistant.components.alarm_control_panel.const import (
     SUPPORT_ALARM_ARM_AWAY,
 )
@@ -34,6 +34,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
 
     _attr_icon = ICON
     _attr_supported_features = (SUPPORT_ALARM_ARM_AWAY)
+    _attr_code_format = FORMAT_NUMBER
 
     def __init__(self, serial):
         """Initialize the alarm control panel."""
