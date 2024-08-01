@@ -55,7 +55,8 @@ class SerialComm():
         _LOGGER.error(f'Sent Message {message}')
         self.writer.write(message.encode('utf-8'))
         _LOGGER.warn(f'Awaited Message {message.encode('utf-8')}')
-
+        line = await self.reader.readline()
+        _LOGGER.warn(f'Read Message {line}')
 
     async def serial_read(self):
         """Read the data from the port."""
