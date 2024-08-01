@@ -20,6 +20,7 @@ async def async_setup_entry(
 
     sensor = hass.data[DOMAIN][config_entry.entry_id][CONNECTION]
 
+    serialSensor = SerialSensor(sensor)
     zoneSensor = ZoneSensor("Zone Status", "Zone", sensor)
     userSensor = ZoneSensor("User ID", "User", sensor)
     armedSensor = ZoneSensor("Alarm Status", "Armed", sensor)
@@ -37,6 +38,7 @@ async def async_setup_entry(
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, dateASensor.stop_serial_read)
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, dateFSensor.stop_serial_read)
 
+    async_add_entities([serialSensor], True)
     async_add_entities([zoneSensor], True)
     async_add_entities([userSensor], True)
     async_add_entities([armedSensor], True)
@@ -45,6 +47,51 @@ async def async_setup_entry(
     async_add_entities([dateASensor], True)
     async_add_entities([dateFSensor], True)
 
+class SerialSensor(SensorEntity):
+    def __init__(
+        self,
+        serial_client,
+        ):
+        self.client = serial_client
+    async def async_added_to_hass(self):
+        """Handle when an entity is about to be added to Home Assistant."""
+        self._serial_loop_task = self.hass.loop.create_task(
+            self.client.serial_read()
+        )
+
+    async def _handle_error(self):
+        """Handle error for serial connection."""
+        self._state = None
+        self._attributes = None
+        self.async_write_ha_state()
+        await asyncio.sleep(5)
+
+    @callback
+    def stop_serial_read(self, event):
+        """Close resources."""
+        if self._serial_loop_task:
+            self._serial_loop_task.cancel()
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
+
+    @property
+    def should_poll(self):
+        """No polling needed."""
+        return False
+
+    @property
+    def extra_state_attributes(self):
+        """Return the attributes of the entity (if any JSON present)."""
+        return self._attributes
+
+    @property
+    def native_value(self):
+        """Return the state of the sensor."""
+        return self._state
+
 class ZoneSensor(SensorEntity):
     """Representation of a Reddit sensor."""
 
@@ -52,7 +99,7 @@ class ZoneSensor(SensorEntity):
         """Initialize the Reddit sensor."""
         self._name = name
         self._sensor = sensor
-        self._serialSensor = serialSensor
+        self._serialSensor = serialSensor.client
         self._state = None
         self._serial_loop_task = None
         self._attributes = None
