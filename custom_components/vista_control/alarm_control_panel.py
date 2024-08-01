@@ -1,8 +1,6 @@
 """Support for Agent DVR Alarm Control Panels."""
 from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity, CodeFormat, AlarmControlPanelEntityFeature
-from homeassistant.components.alarm_control_panel.const import (
-    SUPPORT_ALARM_ARM_AWAY,
-)
+
 from homeassistant.const import (
     STATE_ALARM_ARMED_AWAY,
     STATE_ALARM_DISARMED,

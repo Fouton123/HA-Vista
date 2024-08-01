@@ -50,7 +50,7 @@ class SerialComm():
 
     async def serial_send(self, message):
         if self.writer is None:
-            self.serial_open()
+            await self.serial_open()
 
         _LOGGER.error(f'Sent Message {message}')
         await self.writer.write(message)
@@ -62,7 +62,7 @@ class SerialComm():
         logged_error = False
         while True:
             if self.reader is None:
-                self.serial_open()
+                await self.serial_open()
 
             while True:
                 try:
