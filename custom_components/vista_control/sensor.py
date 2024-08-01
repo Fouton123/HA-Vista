@@ -152,7 +152,7 @@ class VistaSensor(SensorEntity):
         self._name = name
         self._type = type
         self._icon = icon
-        self._serialSensor = serialSensor.client
+        self._serialSensor = serialSensor
         self._state = None
         self._serial_loop_task = None
         self._attributes = None
