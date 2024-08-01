@@ -79,8 +79,8 @@ class vistaBaseStation(AlarmControlPanelEntity):
             _LOGGER.error(f'{code} DISARM')
 
             id = self.sys_data['codes'][str(code)]
-            f'0Ead{id}{code}'
-            message = calc_checksum(code)    
+            message = f'0Ead{id}{code}'
+            message = calc_checksum(message)    
             await self.serial_client.serial_send(message + '\r\n')
             self._attr_state = STATE_ALARM_DISARMED
 
@@ -94,7 +94,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
             _LOGGER.error(f'{code} ARM')
 
             id = self.sys_data['codes'][str(code)]
-            f'0Eaa{id}{code}'
-            message = calc_checksum(code)    
+            message = f'0Eaa{id}{code}'
+            message = calc_checksum(message)    
             await self.serial_client.serial_send(message + '\r\n')
             self._attr_state = STATE_ALARM_ARMED_AWAY
