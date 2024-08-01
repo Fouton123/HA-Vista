@@ -44,16 +44,18 @@ def calc_checksum(string):
 
 def decode_message(message):
 
-    Type = message[4:6]
-    Zone = message[6:9]
-    User = message[9:12]
-    Part = message[12:13]
-    MM = message[13:15]
-    HH = message[15:17]
-    DD = message[17:19]
-    mm = message[19:21]
-    YY = message[21:23]
+    if len(message) > 0:
+        Type = message[4:6]
+        Zone = message[6:9]
+        User = message[9:12]
+        Part = message[12:13]
+        MM = message[13:15]
+        HH = message[15:17]
+        DD = message[17:19]
+        mm = message[19:21]
+        YY = message[21:23]
 
-    values = [Type, Zone, User, Part]
-
+        values = [Type, Zone, User, Part]
+    else:
+        values = None
     return values 
