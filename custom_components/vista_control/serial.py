@@ -97,34 +97,34 @@ class SerialComm():
         
                     #Armed/Disarmed
                     if Type == "07":
-                        self._armed = "Armed"
-                        self._armedIco = "mdi:lock"
-                        self._user = "Armed by:" + str(int(User))
+                        self.armed = "Armed"
+                        self.armedIco = "mdi:lock"
+                        self.user = "Armed by:" + str(int(User))
                         
                     if Type == "08":
-                        self._armed = "Disarmed"
-                        self._armedIco = "mdi:lock-open"
-                        self._user = "Disarmed by:" + str(int(User))
+                        self.armed = "Disarmed"
+                        self.armedIco = "mdi:lock-open"
+                        self.user = "Disarmed by:" + str(int(User))
                         
                     if Type == "07" or Type == "08":
-                        self._tStampA = str(HH) + ":" + str(MM)
-                        self._dStampA = str(mm) + "/" + str(DD) + "/" + str(YY) 
+                        self.tStampA = str(HH) + ":" + str(MM)
+                        self.dStampA = str(mm) + "/" + str(DD) + "/" + str(YY) 
                         line = self._state
 
                     #Zone Status
                     if Type == "F5":
                         Zone = int(Zone)
-                        self._zone = "Fault: " + self._sys_data["zones"][str(Zone)]
-                        self._zoneIco = "mdi:alarm-light-outline"
+                        self.zone = "Fault: " + self._sys_data["zones"][str(Zone)]
+                        self.zoneIco = "mdi:alarm-light-outline"
 
                     if Type == "F6":
                         Zone = int(Zone)
-                        self._zone = "Restore: " + self._sys_data["zones"][str(Zone)]
-                        self._zoneIco = "mdi:alarm-light-off-outline"
+                        self.zone = "Restore: " + self._sys_data["zones"][str(Zone)]
+                        self.zoneIco = "mdi:alarm-light-off-outline"
 
                     if Type == "F5" or Type == "F6":
-                        self._tStampF = str(HH) + ":" + str(MM)
-                        self._dStampF = str(mm) + "/" + str(DD) + "/" + str(YY) 
+                        self.tStampF = str(HH) + ":" + str(MM)
+                        self.dStampF = str(mm) + "/" + str(DD) + "/" + str(YY) 
                         line = self._state
 
                     if self._template is not None:

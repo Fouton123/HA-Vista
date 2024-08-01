@@ -65,21 +65,22 @@ class ZoneSensor(SensorEntity):
         )
         
     async def sensorUpdate(self, **kwargs):
+
         # while True:
         if self._sensor == "Zone":
-            self.retVal = self._serialSensor._zone
+            self.retVal = self._serialSensor.zone
         if self._sensor == "User":
-            self.retVal = self._serialSensor._user
+            self.retVal = self._serialSensor.user
         if self._sensor == "Armed":
-            self.retVal = self._serialSensor._armed
+            self.retVal = self._serialSensor.armed
         if self._sensor == "TimeA":
-            self.retVal = self._serialSensor._tStampA
+            self.retVal = self._serialSensor.tStampA
         if self._sensor == "DateA":
-            self.retVal = self._serialSensor._dStampA
+            self.retVal = self._serialSensor.dStampA
         if self._sensor == "TimeF":
-            self.retVal = self._serialSensor._tStampF
+            self.retVal = self._serialSensor.tStampF
         if self._sensor == "DateF":
-            self.retVal = self._serialSensor._dStampF
+            self.retVal = self._serialSensor.dStampF
 
         self._state = self.retVal
 
@@ -123,19 +124,19 @@ class ZoneSensor(SensorEntity):
     async def async_update(self):
         """Retrieve latest state."""
         if self._sensor == "Zone":
-            self.retVal = self._serialSensor._zone
+            self.retVal = self._serialSensor.zone
         if self._sensor == "User":
-            self.retVal = self._serialSensor._user
+            self.retVal = self._serialSensor.user
         if self._sensor == "Armed":
-            self.retVal = self._serialSensor._armed
+            self.retVal = self._serialSensor.armed
         if self._sensor == "TimeA":
-            self.retVal = self._serialSensor._tStampA
+            self.retVal = self._serialSensor.tStampA
         if self._sensor == "DateA":
-            self.retVal = self._serialSensor._dStampA
+            self.retVal = self._serialSensor.dStampA
         if self._sensor == "TimeF":
-            self.retVal = self._serialSensor._tStampF
+            self.retVal = self._serialSensor.tStampF
         if self._sensor == "DateF":
-            self.retVal = self._serialSensor._dStampF
+            self.retVal = self._serialSensor.dStampF
 
         self._state = self.retVal
 
