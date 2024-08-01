@@ -21,13 +21,13 @@ async def async_setup_entry(
     sensor = hass.data[DOMAIN][config_entry.entry_id][CONNECTION]
 
     serialSensor = SerialSensor(sensor)
-    zoneSensor = ZoneSensor("Zone Status", "Zone", sensor)
-    userSensor = ZoneSensor("User ID", "User", sensor)
-    armedSensor = ZoneSensor("Alarm Status", "Armed", sensor)
-    timeASensor = ZoneSensor("Event Time", "TimeA", sensor)
-    timeFSensor = ZoneSensor("Event Time", "TimeF", sensor)
-    dateASensor = ZoneSensor("Event Date", "DateA", sensor)
-    dateFSensor = ZoneSensor("Event Date", "DateF", sensor)
+    zoneSensor = ZoneSensor("Zone Status", "Zone", serialSensor)
+    userSensor = ZoneSensor("User ID", "User", serialSensor)
+    armedSensor = ZoneSensor("Alarm Status", "Armed", serialSensor)
+    timeASensor = ZoneSensor("Event Time", "TimeA", serialSensor)
+    timeFSensor = ZoneSensor("Event Time", "TimeF", serialSensor)
+    dateASensor = ZoneSensor("Event Date", "DateA", serialSensor)
+    dateFSensor = ZoneSensor("Event Date", "DateF", serialSensor)
         #userSensor = UserSensor("Security User")
     
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, zoneSensor.stop_serial_read)
