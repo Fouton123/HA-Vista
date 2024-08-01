@@ -11,7 +11,7 @@ from .serial import SerialComm
 ATTRIBUTION = "Vista"
 DEFAULT_BRAND = "Vista Vista"
 
-PLATFORMS = [Platform.ALARM_CONTROL_PANEL]
+PLATFORMS = [Platform.ALARM_CONTROL_PANEL, Platform.SENSORS]
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
