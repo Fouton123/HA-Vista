@@ -1,6 +1,7 @@
 from serial import SerialException
 import serial_asyncio
 import json
+from pathlib import Path
 
 import logging
 _LOGGER = logging.getLogger(__name__)
@@ -32,7 +33,8 @@ class SerialComm():
         self._serial_loop_task = None
         self._attributes = None
 
-        self._sys_data = json.loads(SYSTEM_DATA)
+        base_path = Path(__file__).parent
+        self._sys_data = json.loads(base_path / SYSTEM_DATA)
 
 
     def exists(self):
