@@ -4,7 +4,7 @@
       "user": {
         "title": "Set up Vista Control",
         "data": {
-          "serial": "[%key:common::config_flow::data::serial%]",
+          "port": "[%key:common::config_flow::data::port%]"
         }
       }
     },
