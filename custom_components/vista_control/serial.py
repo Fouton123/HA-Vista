@@ -68,6 +68,7 @@ class SerialComm():
         if self.writer is None:
             self.serial_open()
         else:
+            _LOGGER.error(f'Sent Message {message}')
             self.writer.write(message)
 
 
