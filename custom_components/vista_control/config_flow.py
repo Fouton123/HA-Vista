@@ -6,6 +6,7 @@ from homeassistant.const import CONF_PORT
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .serial import SerialComm
+from .helpers import list_ports
 from .const import DOMAIN
 
 DEFAULT_PORT = 8090
@@ -51,7 +52,7 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         data = {
             vol.Required(
                 CONF_PORT,
-            ): vol.In(serial_client.list_ports())
+            ): vol.In(list_ports())
         }
 
         return self.async_show_form(
