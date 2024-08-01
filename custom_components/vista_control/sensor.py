@@ -20,14 +20,14 @@ async def async_setup_entry(
 
     sensor = hass.data[DOMAIN][config_entry.entry_id][CONNECTION]
 
-    zoneSensor = ZoneSensor("Zone Status", "Zone", value_template, sensor)
-    userSensor = ZoneSensor("User ID", "User", value_template, sensor)
-    armedSensor = ZoneSensor("Alarm Status", "Armed", value_template, sensor)
-    timeASensor = ZoneSensor("Event Time", "TimeA", value_template, sensor)
-    timeFSensor = ZoneSensor("Event Time", "TimeF", value_template, sensor)
-    dateASensor = ZoneSensor("Event Date", "DateA", value_template, sensor)
-    dateFSensor = ZoneSensor("Event Date", "DateF", value_template, sensor)
-        #userSensor = UserSensor("Security User", value_template)
+    zoneSensor = ZoneSensor("Zone Status", "Zone", sensor)
+    userSensor = ZoneSensor("User ID", "User", sensor)
+    armedSensor = ZoneSensor("Alarm Status", "Armed", sensor)
+    timeASensor = ZoneSensor("Event Time", "TimeA", sensor)
+    timeFSensor = ZoneSensor("Event Time", "TimeF", sensor)
+    dateASensor = ZoneSensor("Event Date", "DateA", sensor)
+    dateFSensor = ZoneSensor("Event Date", "DateF", sensor)
+        #userSensor = UserSensor("Security User")
     
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, zoneSensor.stop_serial_read)
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, userSensor.stop_serial_read)
@@ -48,14 +48,13 @@ async def async_setup_entry(
 class ZoneSensor(SensorEntity):
     """Representation of a Reddit sensor."""
 
-    def __init__(self, name, sensor, value_template, serialSensor):
+    def __init__(self, name, sensor, serialSensor):
         """Initialize the Reddit sensor."""
         self._name = name
         self._sensor = sensor
         self._serialSensor = serialSensor
         self._state = None
         self._serial_loop_task = None
-        self._template = value_template
         self._attributes = None
         self.retVal = None
 
