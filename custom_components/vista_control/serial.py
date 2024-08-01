@@ -51,11 +51,10 @@ class SerialComm():
     async def serial_send(self, message):
         if self.writer is None:
             self.serial_open()
-        else:
-            _LOGGER.error(f'Sent Message {message}')
-            await self.writer.write(message)
-            _LOGGER.error(f'Awaited Message {message}')
 
+        _LOGGER.error(f'Sent Message {message}')
+        await self.writer.write(message)
+        _LOGGER.error(f'Awaited Message {message}')
 
 
     async def serial_read(self):
@@ -64,77 +63,77 @@ class SerialComm():
         while True:
             if self.reader is None:
                 self.serial_open()
-            else:
-                while True:
+
+            while True:
+                try:
+                    line = await self.reader.readline()
+                except SerialException as exc:
+                    _LOGGER.exception(
+                        "Error while reading serial device %s: %s", self._port, exc
+                    )
+                    await self._handle_error()
+                    break
+                else:
+                    line = line.decode("utf-8").strip()
+
                     try:
-                        line = await self.reader.readline()
-                    except SerialException as exc:
-                        _LOGGER.exception(
-                            "Error while reading serial device %s: %s", self._port, exc
-                        )
-                        await self._handle_error()
-                        break
+                        data = json.loads(line)
+                    except ValueError:
+                        pass
                     else:
-                        line = line.decode("utf-8").strip()
+                        if isinstance(data, dict):
+                            self._attributes = data
 
-                        try:
-                            data = json.loads(line)
-                        except ValueError:
-                            pass
-                        else:
-                            if isinstance(data, dict):
-                                self._attributes = data
+                    Type = line[4:6]
+                    Zone = line[6:9]
+                    User = line[9:12]
+                    Part = line[12:13]
+                    MM = line[13:15]
+                    HH = line[15:17]
+                    DD = line[17:19]
+                    mm = line[19:21]
+                    YY = line[21:23]
+        
+                    #Armed/Disarmed
+                    if Type == "07":
+                        self._armed = "Armed"
+                        self._armedIco = "mdi:lock"
+                        self._user = "Armed by:" + str(int(User))
+                        
+                    if Type == "08":
+                        self._armed = "Disarmed"
+                        self._armedIco = "mdi:lock-open"
+                        self._user = "Disarmed by:" + str(int(User))
+                        
+                    if Type == "07" or Type == "08":
+                        self._tStampA = str(HH) + ":" + str(MM)
+                        self._dStampA = str(mm) + "/" + str(DD) + "/" + str(YY) 
+                        line = self._state
 
-                        Type = line[4:6]
-                        Zone = line[6:9]
-                        User = line[9:12]
-                        Part = line[12:13]
-                        MM = line[13:15]
-                        HH = line[15:17]
-                        DD = line[17:19]
-                        mm = line[19:21]
-                        YY = line[21:23]
-            
-                        #Armed/Disarmed
-                        if Type == "07":
-                            self._armed = "Armed"
-                            self._armedIco = "mdi:lock"
-                            self._user = "Armed by:" + str(int(User))
-                            
-                        if Type == "08":
-                            self._armed = "Disarmed"
-                            self._armedIco = "mdi:lock-open"
-                            self._user = "Disarmed by:" + str(int(User))
-                            
-                        if Type == "07" or Type == "08":
-                            self._tStampA = str(HH) + ":" + str(MM)
-                            self._dStampA = str(mm) + "/" + str(DD) + "/" + str(YY) 
-                            line = self._state
+                    #Zone Status
+                    if Type == "F5":
+                        Zone = int(Zone)
+                        self._zone = "Fault: " + self._sys_data["zones"][str(Zone)]
+                        self._zoneIco = "mdi:alarm-light-outline"
 
-                        #Zone Status
-                        if Type == "F5":
-                            Zone = int(Zone)
-                            self._zone = "Fault: " + self._sys_data["zones"][str(Zone)]
-                            self._zoneIco = "mdi:alarm-light-outline"
+                    if Type == "F6":
+                        Zone = int(Zone)
+                        self._zone = "Restore: " + self._sys_data["zones"][str(Zone)]
+                        self._zoneIco = "mdi:alarm-light-off-outline"
 
-                        if Type == "F6":
-                            Zone = int(Zone)
-                            self._zone = "Restore: " + self._sys_data["zones"][str(Zone)]
-                            self._zoneIco = "mdi:alarm-light-off-outline"
+                    if Type == "F5" or Type == "F6":
+                        self._tStampF = str(HH) + ":" + str(MM)
+                        self._dStampF = str(mm) + "/" + str(DD) + "/" + str(YY) 
+                        line = self._state
 
-                        if Type == "F5" or Type == "F6":
-                            self._tStampF = str(HH) + ":" + str(MM)
-                            self._dStampF = str(mm) + "/" + str(DD) + "/" + str(YY) 
-                            line = self._state
+                    if self._template is not None:
+                        line = self._template.async_render_with_possible_json_value(
+                            line
+                        )
 
-                        if self._template is not None:
-                            line = self._template.async_render_with_possible_json_value(
-                                line
-                            )
-
-                        _LOGGER.debug("Received: %s", line)
-                        self._state = line
-                        self.async_write_ha_state()
+                    _LOGGER.debug("Received: %s", line)
+                    self._state = line
+                    self.async_write_ha_state()
 
     async def serial_open(self):
         logged_error = False
