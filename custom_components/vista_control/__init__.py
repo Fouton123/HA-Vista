@@ -8,8 +8,8 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .const import DOMAIN, CONNECTION
 from .serial import SerialComm
 
-ATTRIBUTION = "Honeywell"
-DEFAULT_BRAND = "Honeywell Vista"
+ATTRIBUTION = "Vista"
+DEFAULT_BRAND = "Vista Vista"
 
 PLATFORMS = [Platform.ALARM_CONTROL_PANEL]
 
@@ -33,8 +33,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     device_registry.async_get_or_create(
         config_entry_id=config_entry.entry_id,
         identifiers={(DOMAIN, serial_client.id)},
-        manufacturer="Honeywell",
-        name=f"Honeywell Vista",
+        manufacturer="Vista",
+        name=f"Vista Vista",
         model="128bpt",
         sw_version=1.0,
     )

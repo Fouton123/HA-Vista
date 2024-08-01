@@ -42,7 +42,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         self._attr_unique_id = f"vista_alarm_control_panel"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, serial.id)},
-            manufacturer="Honeywell",
+            manufacturer="Vista",
             model=CONST_ALARM_CONTROL_PANEL_NAME,
             sw_version=1.0,
         )
