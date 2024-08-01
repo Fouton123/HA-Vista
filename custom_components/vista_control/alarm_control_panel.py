@@ -81,7 +81,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
             id = self.sys_data['codes'][str(code)]
             f'0Ead{id}{code}'
             message = calc_checksum(code)    
-            await self.serial_client.serial_send('message' + '\r\n')
+            await self.serial_client.serial_send(message + '\r\n')
             self._attr_state = STATE_ALARM_DISARMED
 
     async def async_alarm_arm_away(self, code=None):
@@ -96,5 +96,5 @@ class vistaBaseStation(AlarmControlPanelEntity):
             id = self.sys_data['codes'][str(code)]
             f'0Eaa{id}{code}'
             message = calc_checksum(code)    
-            await self.serial_client.serial_send('message' + '\r\n')
+            await self.serial_client.serial_send(message + '\r\n')
             self._attr_state = STATE_ALARM_ARMED_AWAY
