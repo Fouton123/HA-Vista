@@ -34,8 +34,10 @@ class SerialComm():
         self._attributes = None
 
         base_path = Path(__file__).parent
-        self._sys_data = json.loads(f'{base_path}/{SYSTEM_DATA}')
-
+        
+        path = f'{base_path}/{SYSTEM_DATA}'
+        f = open (path, "r")
+        self._sys_data = json.loads(f.read())
 
     def exists(self):
         """Return if serial port exists"""
