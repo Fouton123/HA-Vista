@@ -5,10 +5,9 @@ from homeassistant.const import (
     STATE_ALARM_ARMED_AWAY,
     STATE_ALARM_DISARMED,
 )
-from homeassistant.helpers.entity import DeviceInfo
 
 from .const import CONNECTION, DOMAIN
-from .helpers import calc_checksum
+from .helpers import calc_checksum, device_info
 
 from pathlib import Path
 import json
@@ -41,12 +40,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         self.serial_client = serial
         self._attr_name = CONST_ALARM_CONTROL_PANEL_NAME
         self._attr_unique_id = f"vista_alarm_control_panel"
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, serial.id)},
-            manufacturer="Vista",
-            model=CONST_ALARM_CONTROL_PANEL_NAME,
-            sw_version=1.0,
-        )
+        self._attr_device_info = device_info(CONST_ALARM_CONTROL_PANEL_NAME)
         
         base_path = Path(__file__).parent
         path = f'{base_path}/{SYSTEM_DATA}'

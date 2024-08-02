@@ -6,11 +6,10 @@ from datetime import timedelta
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import CONF_VALUE_TEMPLATE, EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import callback
-from homeassistant.helpers.entity import DeviceInfo
 
 from .const import CONNECTION, DOMAIN
 
-from .helpers import decode_message
+from .helpers import decode_message, device_info
 
 SCAN_INTERVAL = timedelta(seconds=1)
 
@@ -157,12 +156,7 @@ class VistaSensor(SensorEntity):
 
         unique_id =  f'vista_zone_{type}'
         self._attr_unique_id = unique_id
-        self._attr_device_info =  DeviceInfo(
-            identifiers = {(DOMAIN, unique_id)},
-            manufacturer = "Vista",
-            model = "Vista-Zone",
-            name = name
-        )
+        self._attr_device_info =  device_info(name)
         self._type = type
         self._serialSensor = serialSensor
         self._state = None
@@ -227,14 +221,9 @@ class SerialSensor(SensorEntity):
         self._attr_name = self._name
         self._attributes = None
 
-        unique_id =  f'vista_serial_sensor'
+        unique_id =  f'serial_sensor'
         self._attr_unique_id = unique_id
-        self._attr_device_info =  DeviceInfo(
-            identifiers = {(DOMAIN, unique_id)},
-            manufacturer = "Vista",
-            model = "Vista-Serial",
-            name = self._name
-        )
+        self._attr_device_info =  device_info(self._name)
         self._serialSensor = serial
         self._state = None
         self._serial_loop_task = None

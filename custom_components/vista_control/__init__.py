@@ -1,12 +1,24 @@
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform, CONF_PORT
+from homeassistant.const import Platform, CONF_PORT, CONF_NAME
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .const import DOMAIN, CONNECTION
+from .const import DOMAIN, CONNECTION, MANUFACTURER, MODEL
 from .serial import SerialComm
+DeviceInfo(
+            identifiers={
+                # Serial numbers are unique identifiers within a specific domain
+                (hue.DOMAIN, self.unique_id)
+            },
+            name=self.name,
+            manufacturer=self.light.manufacturername,
+            model=self.light.productname,
+            model_id=self.light.modelid,
+            sw_version=self.light.swversion,
+            via_device=(hue.DOMAIN, self.api.bridgeid),
+        )
 
 ATTRIBUTION = "Vista"
 DEFAULT_BRAND = "Vista Vista"
@@ -32,10 +44,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
     device_registry.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        identifiers={(DOMAIN, serial_client.id)},
-        manufacturer="Vista",
-        name=f"Vista Vista",
-        model="128bpt",
+        identifiers = {(DOMAIN, serial_client.id)},
+        manufacturer = MANUFACTURER,
+        model = MODEL,
+        name = config_entry.data[CONF_NAME]
         sw_version=1.0,
     )
 

@@ -2,6 +2,10 @@ import sys
 import glob
 import serial
 
+from homeassistant.helpers.entity import DeviceInfo
+
+from .const import DOMAIN, MANUFACTURER, MODEL
+
 def list_ports():
     """ Lists serial port names
 
@@ -58,3 +62,11 @@ def decode_message(message):
 
         values = [Type, Zone, User, Part]
         return values 
+    
+def device_info(name):
+    return DeviceInfo(
+            identifiers = {(DOMAIN, unique_id)},
+            manufacturer = MANUFACTURER,
+            model = MODEL,
+            name = name
+        )
