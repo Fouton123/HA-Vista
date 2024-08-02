@@ -68,5 +68,5 @@ def device_info(id, name):
             identifiers = {(DOMAIN, id)},
             manufacturer = MANUFACTURER,
             model = MODEL,
-            name = name
+            name = 'security'
         )
