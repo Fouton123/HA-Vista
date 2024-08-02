@@ -154,6 +154,7 @@ class VistaSensor(SensorEntity):
         self._icon = icon
         self._name = name
         self._attr_name = name
+        self._attributes = None
 
         unique_id =  f'vista_zone_{type}'
         self._attr_unique_id = unique_id
