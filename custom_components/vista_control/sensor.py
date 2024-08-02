@@ -158,8 +158,8 @@ class VistaSensor(SensorEntity):
         self._serial_loop_task = None
         self._attributes = None
         self.retVal = None
-        self._attr_name = name
-        self._attr_unique_id = f'vista_zone_{type}'
+        self.name = name
+        self.unique_id = f'vista_zone_{type}'
         self._attr_device_info =  DeviceInfo(
             identifiers={(DOMAIN, self.unique_id )},
             manufacturer="Vista",
