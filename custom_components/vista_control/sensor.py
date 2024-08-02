@@ -217,7 +217,7 @@ class VistaSensor(SensorEntity):
 
     async def async_update(self):
         """Retrieve latest state."""
-        msg = decode_message(self._serialSensor.line)
+        msg = decode_message(self._serialSensor._state)
         if msg is None:
             self._state = self._state
         else:
