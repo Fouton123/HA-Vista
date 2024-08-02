@@ -153,7 +153,6 @@ class VistaSensor(SensorEntity):
     def __init__(self, name, icon, type, serialSensor):
         """Initialize the Reddit sensor."""
         self._icon = icon
-        self._name = name
         self._attributes = None
 
         unique_id =  f'vista_zone_{type}'
