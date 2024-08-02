@@ -35,7 +35,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         identifiers = {(DOMAIN, serial_client.id)},
         manufacturer = MANUFACTURER,
         model = MODEL,
-        name = config_entry.data[CONF_NAME]
+        name = config_entry.data[CONF_NAME],
         sw_version=1.0,
     )
 
