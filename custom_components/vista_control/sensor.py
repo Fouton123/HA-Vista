@@ -147,25 +147,26 @@ class ZoneSensor(SensorEntity):
 
 
 class VistaSensor(SensorEntity):
-    """Representation of a Reddit sensor."""
+    _attr_has_entity_name = True
 
     def __init__(self, name, icon, type, serialSensor):
         """Initialize the Reddit sensor."""
-        self._type = type
         self._icon = icon
+        self._attr_name = name
+
+        unique_id =  f'vista_zone_{type}'
+        self._attr_unique_id = unique_id
+        self._attr_device_info =  DeviceInfo(
+            identifiers = {(DOMAIN, unique_id)},
+            manufacturer = "Vista",
+            model = "Vista-Zone",
+            name = name
+        )
+        self._type = type
         self._serialSensor = serialSensor
         self._state = None
         self._serial_loop_task = None
-        self._attributes = None
         self.retVal = None
-        self.name = name
-        self.unique_id = f'vista_zone_{type}'
-        self._attr_device_info =  DeviceInfo(
-            identifiers={(DOMAIN, self.unique_id )},
-            manufacturer="Vista",
-            model="Vista-Zone",
-            name=self.name
-        )
 
 
     async def async_added_to_hass(self):
