@@ -23,7 +23,8 @@ async def async_setup_entry(
 
     sensor = hass.data[DOMAIN][config_entry.entry_id][CONNECTION]
 
-    zone1Sensor = VistaSensor("Zone 1 Status", 'mdi:alarm-light-outline' ,"1", sensor)
+    serialSensor = SerialSensor(sensor)
+    zone1Sensor = VistaSensor("Zone 1 Status", 'mdi:alarm-light-outline' ,"1", serialSensor)
     #zoneSensor = ZoneSensor("Zone Status", "Zone", sensor)
     #userSensor = ZoneSensor("User ID", "User", sensor)
     #armedSensor = ZoneSensor("Alarm Status", "Armed", sensor)
@@ -33,15 +34,15 @@ async def async_setup_entry(
     #dateFSensor = ZoneSensor("Event Date", "DateF", sensor)
         #userSensor = UserSensor("Security User")
     
-    #hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, zoneSensor.stop_serial_read)
-    #hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, userSensor.stop_serial_read)
+    hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, serialSensor.stop_serial_read)
+    hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, zone1Sensor.stop_serial_read)
     #hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, armedSensor.stop_serial_read)
     #hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, timeASensor.stop_serial_read)
     #hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, timeFSensor.stop_serial_read)
     #hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, dateASensor.stop_serial_read)
     #hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, dateFSensor.stop_serial_read)
 
-    async_add_entities([zone1Sensor], True)
+    async_add_entities([serialSensor, zone1Sensor], True)
     #async_add_entities([zoneSensor], True)
     #async_add_entities([userSensor], True)
     #async_add_entities([armedSensor], True)
@@ -178,7 +179,7 @@ class VistaSensor(SensorEntity):
         )
         
     async def sensorUpdate(self, **kwargs):
-        msg = decode_message(self._serialSensor.line)
+        msg = decode_message(self._serialSensor._state)
         #if self._type == msg[0]:
         if msg is None:
             self._state = self._state
@@ -222,3 +223,64 @@ class VistaSensor(SensorEntity):
         else:
             self._state = msg[1]
         
+
+class SerialSensor(SensorEntity):
+    _attr_has_entity_name = True
+
+    def __init__(self, serial):
+        """Initialize the Reddit sensor."""
+        self._icon = "mdi:serial-port"
+        self._name = "Vista-Serial"
+        self._attr_name = self._name
+        self._attributes = None
+
+        unique_id =  f'vista_serial_sensor'
+        self._attr_unique_id = unique_id
+        self._attr_device_info =  DeviceInfo(
+            identifiers = {(DOMAIN, unique_id)},
+            manufacturer = "Vista",
+            model = "Vista-Serial",
+            name = self._name
+        )
+        self._serialSensor = serial
+        self._state = None
+        self._serial_loop_task = None
+        self.retVal = None
+
+
+    async def async_added_to_hass(self):
+        """Handle when an entity is about to be added to Home Assistant."""
+        self._serial_loop_task = self.hass.loop.create_task(
+            self.serial_read()
+        )
+        
+    async def serial_read(self, **kwargs):
+        while True:
+            self._state = await self._serialSensor.serial_read()
+            
+
+    @callback
+    def stop_serial_read(self, event):
+        """Close resources."""
+        if self._serial_loop_task:
+            self._serial_loop_task.cancel()
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
+
+    @property
+    def native_value(self):
+        """Return the state of the sensor."""
+        return self.retVal
+
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        return self._attributes
+
+    @property
+    def icon(self):
+        """Return the icon to use in the frontend."""
+        return "mdi:serial-port"
