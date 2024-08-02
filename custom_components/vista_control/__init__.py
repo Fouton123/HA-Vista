@@ -7,18 +7,6 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import DOMAIN, CONNECTION, MANUFACTURER, MODEL
 from .serial import SerialComm
-DeviceInfo(
-            identifiers={
-                # Serial numbers are unique identifiers within a specific domain
-                (hue.DOMAIN, self.unique_id)
-            },
-            name=self.name,
-            manufacturer=self.light.manufacturername,
-            model=self.light.productname,
-            model_id=self.light.modelid,
-            sw_version=self.light.swversion,
-            via_device=(hue.DOMAIN, self.api.bridgeid),
-        )
 
 ATTRIBUTION = "Vista"
 DEFAULT_BRAND = "Vista Vista"
