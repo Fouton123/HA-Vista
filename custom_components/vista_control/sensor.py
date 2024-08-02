@@ -6,8 +6,10 @@ from datetime import timedelta
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import CONF_VALUE_TEMPLATE, EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import callback
+from homeassistant.helpers.entity import DeviceInfo
 
 from .const import CONNECTION, DOMAIN
+
 from .helpers import decode_message
 
 SCAN_INTERVAL = timedelta(seconds=1)
@@ -149,7 +151,6 @@ class VistaSensor(SensorEntity):
 
     def __init__(self, name, icon, type, serialSensor):
         """Initialize the Reddit sensor."""
-        self._name = name
         self._type = type
         self._icon = icon
         self._serialSensor = serialSensor
@@ -157,6 +158,15 @@ class VistaSensor(SensorEntity):
         self._serial_loop_task = None
         self._attributes = None
         self.retVal = None
+        self._attr_name = name
+        self._attr_unique_id = f'vista_zone_{type}'
+        self._attr_device_info =  DeviceInfo(
+            identifiers={(DOMAIN, self.unique_id )},
+            manufacturer="Vista",
+            model="Vista-Zone",
+            name=self.name
+        )
+
 
     async def async_added_to_hass(self):
         """Handle when an entity is about to be added to Home Assistant."""
