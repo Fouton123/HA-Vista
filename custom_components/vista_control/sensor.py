@@ -194,11 +194,6 @@ class VistaSensor(SensorEntity):
             self._serial_loop_task.cancel()
 
     @property
-    def name(self):
-        """Return the name of the sensor."""
-        return self._name
-
-    @property
     def native_value(self):
         """Return the state of the sensor."""
         return self.retVal
