@@ -156,7 +156,7 @@ class VistaSensor(SensorEntity):
 
         unique_id =  f'vista_zone_{type}'
         self._attr_unique_id = unique_id
-        self._attr_device_info =  device_info(name)
+        self._attr_device_info =  device_info(unique_id, name)
         self._type = type
         self._serialSensor = serialSensor
         self._state = None
@@ -223,7 +223,7 @@ class SerialSensor(SensorEntity):
 
         unique_id =  f'serial_sensor'
         self._attr_unique_id = unique_id
-        self._attr_device_info =  device_info(self._name)
+        self._attr_device_info =  device_info(unique_id, self._name)
         self._serialSensor = serial
         self._state = None
         self._serial_loop_task = None

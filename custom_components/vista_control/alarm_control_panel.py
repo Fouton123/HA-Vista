@@ -40,7 +40,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         self.serial_client = serial
         self._attr_name = CONST_ALARM_CONTROL_PANEL_NAME
         self._attr_unique_id = f"vista_alarm_control_panel"
-        self._attr_device_info = device_info(CONST_ALARM_CONTROL_PANEL_NAME)
+        self._attr_device_info = device_info(serial.id, CONST_ALARM_CONTROL_PANEL_NAME)
         
         base_path = Path(__file__).parent
         path = f'{base_path}/{SYSTEM_DATA}'

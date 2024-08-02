@@ -63,9 +63,9 @@ def decode_message(message):
         values = [Type, Zone, User, Part]
         return values 
     
-def device_info(name):
+def device_info(id, name):
     return DeviceInfo(
-            identifiers = {(DOMAIN, unique_id)},
+            identifiers = {(DOMAIN, id)},
             manufacturer = MANUFACTURER,
             model = MODEL,
             name = name
