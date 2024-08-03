@@ -56,8 +56,6 @@ class SerialComm():
         self.writer.write(message.encode('utf-8'))
         self._interupt = False
 
-        return line
-    
     async def serial_read(self):
         """Read the data from the port."""
         if self.reader is None:
