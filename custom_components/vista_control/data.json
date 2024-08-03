@@ -1,16 +1,16 @@
 {
     "zones": {
-        "1": "S/W Chapel Door",
-        "2": "N/W Chapel Door",
-        "3": "West Rear Door",
-        "4": "E Rear S/W Chapel Door",
-        "5": "Rear Lobby W OFC Door",
-        "6": "East Hall Motion",
-        "7": "ZN 007",
-        "10": "Rear Lobby Motion",
-        "11": "North Rear Door",
-        "12": "Bathroom Hall Motion",
-        "13": "Front Lobby Motion",
+        "001": "S/W Chapel Door",
+        "002": "N/W Chapel Door",
+        "003": "West Rear Door",
+        "004": "E Rear S/W Chapel Door",
+        "005": "Rear Lobby W OFC Door",
+        "006": "East Hall Motion",
+        "007": "ZN 007",
+        "010": "Rear Lobby Motion",
+        "011": "North Rear Door",
+        "012": "Bathroom Hall Motion",
+        "013": "Front Lobby Motion",
         "997": "ZN 997"
     },
     "codes": {
