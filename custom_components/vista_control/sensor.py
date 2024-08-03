@@ -108,7 +108,7 @@ class ArmSensor(SensorEntity):
         self._serialSensor = serialSensor
         self._state = None
         self.data = data
-        self.set_deice_class(data)
+        self.set_deice_class()
         self._serial_loop_task = None
 
 
