@@ -103,7 +103,7 @@ class ZoneSensor(SensorEntity):
     @property
     def native_value(self):
         """Return the state of the sensor."""
-        return self.retVal
+        return "TEST"
 
     @property
     def extra_state_attributes(self):
@@ -189,7 +189,7 @@ class VistaSensor(SensorEntity):
     @property
     def native_value(self):
         """Return the state of the sensor."""
-        return self.retVal
+        return "TEST"
 
     @property
     def extra_state_attributes(self):
