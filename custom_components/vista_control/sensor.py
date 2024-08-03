@@ -237,12 +237,13 @@ class SerialSensor(SensorEntity):
         
     async def serial_read(self, **kwargs):
         while True:
+            self._state = "TEST1"
             self._state = await self._serialSensor.serial_read()
             
     
     async def async_update(self):
         """Retrieve latest state."""
-        self._state = self._state
+        self._state = "TEST"
         
     @callback
     def stop_serial_read(self, event):
