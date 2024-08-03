@@ -65,12 +65,10 @@ class ZoneSensor(SensorEntity):
         _LOGGER.error(msg)
         #Zone Status
         if str(msg[0]) == "F5" and str(msg[1]) == self._zone_id:
-            Zone = int(Zone)
             self._state = "Fault"
             self._icon = "mdi:alarm-light-outline"
 
         if str(msg[0]) == "F6" and str(msg[1]) == self._zone_id:
-            Zone = int(Zone)
             self._state = "Restore"
             self._icon = "mdi:alarm-light-off-outline"
 
