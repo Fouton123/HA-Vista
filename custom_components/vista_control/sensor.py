@@ -29,7 +29,7 @@ async def async_setup_entry(
     path = f'{base_path}/{SYSTEM_DATA}'
     f = open (path, "r")
     sys_data = json.loads(f.read())
-    sensors = []
+    sensors = [serialSensor]
     for i in sys_data["zones"].keys():
         tmp_sense = ZoneSensor(sys_data["zones"][i],i, serialSensor, sensor.id)
         sensors.append(tmp_sense)
