@@ -261,9 +261,9 @@ class SerialSensor(SensorEntity):
         return self._name
 
     @property
-    def native_value(self):
+    async def native_value(self):
         """Return the state of the sensor."""
-        return self._serialSensor.serial_read()
+        return await self._serialSensor.serial_read()
 
     @property
     def extra_state_attributes(self):
