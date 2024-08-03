@@ -128,7 +128,6 @@ class ZonesSensor(SensorEntity):
         
     async def sensorUpdate(self, **kwargs):
         msg = decode_message(self._serialSensor._state)
-        _LOGGER.error(msg)
         #Zone Status
         if str(msg[0]) == "F5" or str(msg[0]) == "F6":
             if self.data == "DATE":
@@ -202,7 +201,6 @@ class ArmSensor(SensorEntity):
         
     async def sensorUpdate(self, **kwargs):
         msg = decode_message(self._serialSensor._state)
-        _LOGGER.error(msg)
         #Zone Status
         if str(msg[0]) == "07" or str(msg[0]) == "08":
             if self.data == "DATE":
