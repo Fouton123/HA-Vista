@@ -31,6 +31,7 @@ class SerialComm():
         self._xonxoff = DEFAULT_XONXOFF
         self._rtscts = DEFAULT_RTSCTS
         self._dsrdtr = DEFAULT_DSRDTR
+        self._interupt = False
         self._serial_loop_task = None
         self._attributes = None
         self.reader = None
@@ -51,10 +52,10 @@ class SerialComm():
     async def serial_send(self, message):
         if self.writer is None:
             await self.serial_open()
-        
+        self._interupt = True
         self.writer.write(message.encode('utf-8'))
-        line = await self.reader.readline()
-        line = await self.reader.readline()
+        self._interupt = False
+
         return line
     
     async def serial_read(self):
@@ -63,18 +64,19 @@ class SerialComm():
             await self.serial_open()
 
         while True:
-            try:
-                line = await self.reader.readline()
-            except SerialException as exc:
-                _LOGGER.exception(
-                    "Error while reading serial device %s: %s", self._port, exc
-                )
-                await self._handle_error()
-                break
-            else:
-                self.line = line.decode("utf-8").strip()
+            if self._interupt == False:
+                try:
+                    line = await self.reader.readline()
+                except SerialException as exc:
+                    _LOGGER.exception(
+                        "Error while reading serial device %s: %s", self._port, exc
+                    )
+                    await self._handle_error()
+                    break
+                else:
+                    self.line = line.decode("utf-8").strip()
 
-                return self.line
+                    return self.line
 
     async def serial_open(self):
         logged_error = False
