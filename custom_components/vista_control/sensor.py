@@ -64,15 +64,17 @@ class ZoneSensor(SensorEntity):
         msg = decode_message(self._serialSensor._state)
 
         #Zone Status
-        if msg[0] == "F5" and msg[1] == self._zone_id:
+        if str(msg[0]) == "F5" and str(msg[1]) == self._zone_id:
             Zone = int(Zone)
             self._state = "Fault"
             self._icon = "mdi:alarm-light-outline"
 
-        if msg[0] == "F6" and msg[1] == self._zone_id:
+        if str(msg[0]) == "F6" and str(msg[1]) == self._zone_id:
             Zone = int(Zone)
             self._state = "Restore"
             self._icon = "mdi:alarm-light-off-outline"
+
+        
 
     @callback
     def stop_serial_read(self, event):
