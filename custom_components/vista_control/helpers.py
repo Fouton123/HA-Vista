@@ -48,7 +48,7 @@ def calc_checksum(string):
 
 def decode_message(message):
     if message is None:
-        return None
+        return [0,0,0,0]
     else:
         Type = message[4:6]
         Zone = message[6:9]
