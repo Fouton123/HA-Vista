@@ -106,7 +106,7 @@ class ArmSensor(SensorEntity):
         self._attr_name = name
         """Initialize the Reddit sensor."""
         self._icon = "mdi:lock"
-        unique_id =  f'vista_alarm_status'
+        unique_id =  f'vista_{name}'
         self._attr_unique_id = unique_id
         self._attr_device_info =  device_info(device_id)
         self._serialSensor = serialSensor
