@@ -25,10 +25,10 @@ async def async_setup_entry(
     """Set up the Serial sensor platform."""
     sensor = hass.data[DOMAIN][config_entry.entry_id][CONNECTION]
     serialSensor = SerialSensor(sensor)
-    armDate = ArmSensor(serialSensor, "DATE", sensor.id)
-    armTime = ArmSensor(serialSensor, "TIME", sensor.id)
-    armStat = ArmSensor(serialSensor, "STAT", sensor.id)
-    armUser = ArmSensor(serialSensor, "USER", sensor.id)
+    armDate = ArmSensor("Arm Date", serialSensor, "DATE", sensor.id)
+    armTime = ArmSensor("Arm Time", serialSensor, "TIME", sensor.id)
+    armStat = ArmSensor("Arm Status", serialSensor, "STAT", sensor.id)
+    armUser = ArmSensor("Arm User", serialSensor, "USER", sensor.id)
     
     base_path = Path(__file__).parent
     path = f'{base_path}/{SYSTEM_DATA}'
@@ -101,9 +101,9 @@ class ZoneSensor(SensorEntity):
 class ArmSensor(SensorEntity):
     _attr_has_entity_name = True
 
-    def __init__(self, serialSensor, data, device_id):
+    def __init__(self, name, serialSensor, data, device_id):
         self.set_deice_class(data)
-        self._attr_name = "Alarm Status"
+        self._attr_name = name
         """Initialize the Reddit sensor."""
         self._icon = "mdi:lock"
         unique_id =  f'vista_alarm_status'
