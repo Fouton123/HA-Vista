@@ -205,7 +205,7 @@ class SerialSensor(SensorEntity):
         """Initialize the Reddit sensor."""
         self._icon = "mdi:serial-port"
         self._attr_unique_id = 'serial_sensor'
-        self._attr_device_info =  device_info(serial.id, self._name)
+        self._attr_device_info =  device_info(serial.id, "Vista-Serial")
         self._serialSensor = serial
         self._state = None
         self._serial_loop_task = None
