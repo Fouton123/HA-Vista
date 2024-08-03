@@ -43,7 +43,7 @@ class ZoneSensor(SensorEntity):
     def __init__(self, name, zone_id, serialSensor, device_id):
         """Initialize the Reddit sensor."""
         self._attributes = None
-
+        self._icon = "mdi:alarm-light-outline"
         unique_id =  f'vista_zone_{type}'
         self._attr_unique_id = unique_id
         self._attr_device_info =  device_info(device_id, name)
