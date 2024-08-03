@@ -37,108 +37,11 @@ async def async_setup_entry(
 
     async_add_entities(sensors, True)
 
-class OldSensor(SensorEntity):
-    """Representation of a Reddit sensor."""
-
-    def __init__(self, name, sensor, serialSensor):
-        """Initialize the Reddit sensor."""
-        self._name = name
-        self._sensor = sensor
-        self._serialSensor = serialSensor.client
-        self._state = None
-        self._serial_loop_task = None
-        self._attributes = None
-        self.retVal = None
-
-    async def async_added_to_hass(self):
-        """Handle when an entity is about to be added to Home Assistant."""
-        self._serial_loop_task = self.hass.loop.create_task(
-            self.sensorUpdate()
-        )
-        
-    async def sensorUpdate(self, **kwargs):
-        self._serialSensor.serial_read()
-        # while True:
-        if self._sensor == "Zone":
-            self.retVal = self._serialSensor.zone
-        if self._sensor == "User":
-            self.retVal = self._serialSensor.user
-        if self._sensor == "Armed":
-            self.retVal = self._serialSensor.armed
-        if self._sensor == "TimeA":
-            self.retVal = self._serialSensor.tStampA
-        if self._sensor == "DateA":
-            self.retVal = self._serialSensor.dStampA
-        if self._sensor == "TimeF":
-            self.retVal = self._serialSensor.tStampF
-        if self._sensor == "DateF":
-            self.retVal = self._serialSensor.dStampF
-
-        self._state = self.retVal
-
-    @callback
-    def stop_serial_read(self, event):
-        """Close resources."""
-        if self._serial_loop_task:
-            self._serial_loop_task.cancel()
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return self._name
-
-    @property
-    def native_value(self):
-        """Return the state of the sensor."""
-        return "TEST"
-
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        return self._attributes
-
-    @property
-    def icon(self):
-        """Return the icon to use in the frontend."""
-        if self._sensor == "Zone":
-            ret = self._serialSensor.zoneIco
-        if self._sensor == "User":
-            ret = self._serialSensor.userIco
-        if self._sensor == "Armed":
-            ret = self._serialSensor.armedIco
-        if self._sensor == "TimeA" or  self._sensor == "TimeF":
-            ret = self._serialSensor.tStampIco
-        if self._sensor == "DateA" or  self._sensor == "DateF":
-            ret = self._serialSensor.dStampIco
-        return ret
-        
-
-    async def async_update(self):
-        """Retrieve latest state."""
-        if self._sensor == "Zone":
-            self.retVal = self._serialSensor.zone
-        if self._sensor == "User":
-            self.retVal = self._serialSensor.user
-        if self._sensor == "Armed":
-            self.retVal = self._serialSensor.armed
-        if self._sensor == "TimeA":
-            self.retVal = self._serialSensor.tStampA
-        if self._sensor == "DateA":
-            self.retVal = self._serialSensor.dStampA
-        if self._sensor == "TimeF":
-            self.retVal = self._serialSensor.tStampF
-        if self._sensor == "DateF":
-            self.retVal = self._serialSensor.dStampF
-
-        self._state = self.retVal
-
-
 class ZoneSensor(SensorEntity):
     _attr_has_entity_name = True
 
-    def __init__(self, name, icon, zone_id, serialSensor, device_id):
+    def __init__(self, name, zone_id, serialSensor, device_id):
         """Initialize the Reddit sensor."""
-        self._icon = icon
         self._attributes = None
 
         unique_id =  f'vista_zone_{type}'
