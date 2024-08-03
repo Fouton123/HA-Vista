@@ -99,7 +99,6 @@ class ArmSensor(SensorEntity):
     _attr_has_entity_name = True
 
     def __init__(self, name, serialSensor, data, device_id):
-        self.set_deice_class(data)
         self._attr_name = name
         """Initialize the Reddit sensor."""
         self._icon = "mdi:lock"
@@ -109,6 +108,7 @@ class ArmSensor(SensorEntity):
         self._serialSensor = serialSensor
         self._state = None
         self.data = data
+        self.set_deice_class(data)
         self._serial_loop_task = None
 
 
@@ -157,10 +157,10 @@ class ArmSensor(SensorEntity):
         """Return the icon to use in the frontend."""
         return self._icon
 
-    def set_deice_class(self, data):
-        if data == "DATE":
+    def set_deice_class(self):
+        if self.data == "DATE":
             self._attr_device_class = SensorDeviceClass.DATE
-        elif data == "TIME":
+        elif self.data == "TIME":
             self._attr_device_class = SensorDeviceClass.TIMESTAMP
         else:
             self._attr_device_class = None
