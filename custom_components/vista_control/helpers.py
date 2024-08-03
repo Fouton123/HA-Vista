@@ -63,7 +63,7 @@ def decode_message(message):
         values = [Type, Zone, User, Part]
         return values 
     
-def device_info(id, name):
+def device_info(id):
     return DeviceInfo(
             identifiers = {(DOMAIN, id)},
             manufacturer = MANUFACTURER,

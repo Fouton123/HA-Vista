@@ -40,7 +40,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         self.serial_client = serial
         self._attr_name = CONST_ALARM_CONTROL_PANEL_NAME
         self._attr_unique_id = f"vista_alarm_control_panel"
-        self._attr_device_info = device_info(serial.id, CONST_ALARM_CONTROL_PANEL_NAME)
+        self._attr_device_info = device_info(serial.id)
         
         base_path = Path(__file__).parent
         path = f'{base_path}/{SYSTEM_DATA}'
@@ -76,6 +76,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
             message = f'0Ead{id}{code}00'
             message = calc_checksum(message)    
             await self.serial_client.serial_send(message + '\r\n')
+            
             self._attr_state = STATE_ALARM_DISARMED
 
     async def async_alarm_arm_away(self, code=None):
