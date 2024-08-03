@@ -66,7 +66,6 @@ class ZoneSensor(SensorEntity):
         
     async def sensorUpdate(self, **kwargs):
         msg = decode_message(self._serialSensor._state)
-        _LOGGER.error(msg)
         #Zone Status
         if str(msg[0]) == "F5" and str(msg[1]) == self._zone_id:
             self._state = "Fault"
