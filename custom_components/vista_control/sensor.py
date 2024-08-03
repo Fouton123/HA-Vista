@@ -75,8 +75,6 @@ class ZoneSensor(SensorEntity):
             self._state = "Restore"
             self._icon = "mdi:alarm-light-off-outline"
 
-        
-
     @callback
     def stop_serial_read(self, event):
         """Close resources."""
@@ -158,10 +156,6 @@ class ArmSensor(SensorEntity):
         """Return the icon to use in the frontend."""
         return self._icon
 
-    async def async_update(self):
-        """Retrieve latest state."""
-        await self.sensorUpdate()
-
     def set_deice_class(self, data):
         if data == "DATE":
             self._attr_device_class = SensorDeviceClass.DATE
@@ -169,6 +163,10 @@ class ArmSensor(SensorEntity):
             self._attr_device_class = SensorDeviceClass.TIMESTAMP
         else:
             self._attr_device_class = None
+
+    async def async_update(self):
+        """Retrieve latest state."""
+        await self.sensorUpdate()
 
 class SerialSensor(SensorEntity):
     _attr_has_entity_name = True
