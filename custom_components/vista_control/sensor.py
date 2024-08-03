@@ -41,8 +41,8 @@ class ZoneSensor(SensorEntity):
     _attr_has_entity_name = True
 
     def __init__(self, name, zone_id, serialSensor, device_id):
+        _attr_name = name
         """Initialize the Reddit sensor."""
-        self._attributes = None
         self._icon = "mdi:alarm-light-outline"
         unique_id =  f'vista_zone_{type}'
         self._attr_unique_id = unique_id
@@ -84,11 +84,6 @@ class ZoneSensor(SensorEntity):
     def native_value(self):
         """Return the state of the sensor."""
         return self._state
-
-    @property
-    def extra_state_attributes(self):
-        """Return the state attributes."""
-        return self._attributes
 
     @property
     def icon(self):
