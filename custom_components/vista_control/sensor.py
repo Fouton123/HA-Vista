@@ -243,7 +243,7 @@ class SerialSensor(SensorEntity):
             
     def update(self):
         """Retrieve latest state."""
-        self._state = self._state = self._serialSensor.serial_read()
+        self._state = self._serialSensor.serial_read()
 
     async def async_update(self):
         """Retrieve latest state."""
@@ -263,7 +263,7 @@ class SerialSensor(SensorEntity):
     @property
     def native_value(self):
         """Return the state of the sensor."""
-        return self.retVal
+        return self._serialSensor.serial_read()
 
     @property
     def extra_state_attributes(self):
