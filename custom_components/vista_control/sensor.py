@@ -108,6 +108,7 @@ class ArmSensor(SensorEntity):
         self._attr_device_info =  device_info(device_id)
         self._serialSensor = serialSensor
         self._state = None
+        self.data = data
         self._serial_loop_task = None
 
 
