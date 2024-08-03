@@ -240,15 +240,7 @@ class SerialSensor(SensorEntity):
         while True:
             self._state = "TEST1"
             self._state = await self._serialSensor.serial_read()
-            
-    def update(self):
-        """Retrieve latest state."""
-        self._state = self._serialSensor.serial_read()
 
-    async def async_update(self):
-        """Retrieve latest state."""
-        self._state = "TEST"
-        
     @callback
     def stop_serial_read(self, event):
         """Close resources."""
@@ -261,9 +253,9 @@ class SerialSensor(SensorEntity):
         return self._name
 
     @property
-    async def native_value(self):
+    def native_value(self):
         """Return the state of the sensor."""
-        return await self._serialSensor.serial_read()
+        return self._state
 
     @property
     def extra_state_attributes(self):
