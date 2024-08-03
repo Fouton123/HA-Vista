@@ -23,7 +23,7 @@ async def async_setup_entry(
     sensor = hass.data[DOMAIN][config_entry.entry_id][CONNECTION]
 
     serialSensor = SerialSensor(sensor)
-    zone1Sensor = VistaSensor("Zone 1 Status", 'mdi:alarm-light-outline' ,"1", serialSensor)
+    zone1Sensor = VistaSensor("Zone 1 Status", 'mdi:alarm-light-outline' ,"1", serialSensor, sensor.id)
     #zoneSensor = ZoneSensor("Zone Status", "Zone", sensor)
     #userSensor = ZoneSensor("User ID", "User", sensor)
     #armedSensor = ZoneSensor("Alarm Status", "Armed", sensor)
@@ -149,14 +149,14 @@ class ZoneSensor(SensorEntity):
 class VistaSensor(SensorEntity):
     _attr_has_entity_name = True
 
-    def __init__(self, name, icon, type, serialSensor):
+    def __init__(self, name, icon, type, serialSensor, device_id):
         """Initialize the Reddit sensor."""
         self._icon = icon
         self._attributes = None
 
         unique_id =  f'vista_zone_{type}'
         self._attr_unique_id = unique_id
-        self._attr_device_info =  device_info(serialSensor.id, name)
+        self._attr_device_info =  device_info(device_id, name)
         self._type = type
         self._serialSensor = serialSensor
         self._state = None
