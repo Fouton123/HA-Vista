@@ -2,7 +2,7 @@ import voluptuous as vol
 import secrets
 
 from homeassistant import config_entries
-from homeassistant.const import CONF_PORT, CONF_NAME
+from homeassistant.const import CONF_PORT
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .serial import SerialComm
@@ -25,7 +25,6 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             serial_port = user_input[CONF_PORT]
-            name = user_input[CONF_NAME]
 
             serial_client = SerialComm(serial_port)
             if serial_client.exists():
@@ -39,13 +38,11 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 self._abort_if_unique_id_configured(
                     updates={
                         serial_port: user_input[CONF_PORT],
-                        name: user_input[CONF_NAME],
                     }
                 )
 
                 self.device_config = {
                     CONF_PORT: serial_port,
-                    CONF_NAME: name,
                 }
 
                 return await self._create_entry('Vista Control')
@@ -54,7 +51,6 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         data = {
             vol.Required(CONF_PORT): vol.In(list_ports()),
-            vol.Required(CONF_NAME): str,
         }
 
         return self.async_show_form(

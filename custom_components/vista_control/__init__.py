@@ -1,5 +1,5 @@
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform, CONF_PORT, CONF_NAME
+from homeassistant.const import Platform, CONF_PORT
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
@@ -35,7 +35,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         identifiers = {(DOMAIN, serial_client.id)},
         manufacturer = MANUFACTURER,
         model = MODEL,
-        name = config_entry.data[CONF_NAME],
+        name = "Security System",
         sw_version=1.0,
     )
 
