@@ -221,9 +221,8 @@ class SerialSensor(SensorEntity):
         self._attr_name = self._name
         self._attributes = None
 
-        unique_id =  f'serial_sensor'
-        self._attr_unique_id = unique_id
-        self._attr_device_info =  device_info(unique_id, self._name)
+        self._attr_unique_id = 'serial_sensor'
+        self._attr_device_info =  device_info(serial.id, self._name)
         self._serialSensor = serial
         self._state = None
         self._serial_loop_task = None
