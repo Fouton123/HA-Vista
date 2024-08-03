@@ -92,7 +92,7 @@ class ZoneSensor(SensorEntity):
 
     async def async_update(self):
         """Retrieve latest state."""
-        self.sensorUpdate()
+        await self.sensorUpdate()
 
 class SerialSensor(SensorEntity):
     _attr_has_entity_name = True
