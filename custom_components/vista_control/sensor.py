@@ -241,9 +241,9 @@ class SerialSensor(SensorEntity):
             self._state = "TEST1"
             self._state = await self._serialSensor.serial_read()
             
-    async def update(self):
+    def update(self):
         """Retrieve latest state."""
-        self._state = self._state = await self._serialSensor.serial_read()
+        self._state = self._state = self._serialSensor.serial_read()
 
     async def async_update(self):
         """Retrieve latest state."""
