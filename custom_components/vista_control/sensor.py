@@ -124,13 +124,13 @@ class ArmSensor(SensorEntity):
         #Zone Status
         if str(msg[0]) == "07" or str(msg[0]) == "08":
             if self.data == "DATE":
-                self._state = dt.utcnow()
+                self._state = dt.utcnow().strftime("%m/%d/%Y")
                 self._icon = "mdi:calendar-month-outline"
             if self.data == "TIME":
                 self._state = dt.utcnow()
                 self._icon = "mdi:clock-time-four-outline"
             if self.data == "USER":
-                self._state = msg[3]
+                self._state = msg[2]
                 self._icon = "mdi:account"
 
         if str(msg[0]) == "07" and self.data == "STAT":
