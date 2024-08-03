@@ -25,10 +25,10 @@ async def async_setup_entry(
     """Set up the Serial sensor platform."""
     sensor = hass.data[DOMAIN][config_entry.entry_id][CONNECTION]
     serialSensor = SerialSensor(sensor)
-    armDate = ArmSensor(sensor, "DATE", sensor.id)
-    armTime = ArmSensor(sensor, "TIME", sensor.id)
-    armStat = ArmSensor(sensor, "STAT", sensor.id)
-    armUser = ArmSensor(sensor, "USER", sensor.id)
+    armDate = ArmSensor(sensor, "DATE", serialSensor)
+    armTime = ArmSensor(sensor, "TIME", serialSensor)
+    armStat = ArmSensor(sensor, "STAT", serialSensor)
+    armUser = ArmSensor(sensor, "USER", serialSensor)
     
     base_path = Path(__file__).parent
     path = f'{base_path}/{SYSTEM_DATA}'
