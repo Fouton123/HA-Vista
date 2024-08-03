@@ -213,7 +213,6 @@ class VistaSensor(SensorEntity):
 
 class SerialSensor(SensorEntity):
     _attr_has_entity_name = True
-    _attr_native_value = "STR"
 
     def __init__(self, serial):
         """Initialize the Reddit sensor."""
@@ -238,7 +237,6 @@ class SerialSensor(SensorEntity):
         
     async def serial_read(self, **kwargs):
         while True:
-            self._state = "TEST1"
             self._state = await self._serialSensor.serial_read()
 
     @callback
