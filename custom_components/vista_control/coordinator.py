@@ -19,11 +19,11 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(hass, config_entry, async_add_entities):
     """Config entry example."""
     # assuming API object stored here by __init__.py
-    my_api = hass.data[DOMAIN][entry.entry_id]
-    coordinator = MyCoordinator(hass, my_api)
+    my_api = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator = MyCoordinator(hass, my_api, hass.data[DOMAIN][config_entry.entry_id][CONNECTION])
 
     # Fetch initial data so we have data when entities subscribe
     #
@@ -74,14 +74,7 @@ class MyCoordinator(DataUpdateCoordinator):
                 # data retrieved from API.
                 listening_idx = set(self.async_contexts())
                 return await self.my_api.fetch_data(listening_idx)
-        except ApiAuthError as err:
-            # Raising ConfigEntryAuthFailed will cancel future updates
-            # and start a config flow with SOURCE_REAUTH (async_step_reauth)
-            raise ConfigEntryAuthFailed from err
-        except ApiError as err:
-            raise UpdateFailed(f"Error communicating with API: {err}")
-
-
+        
 class MyEntity(CoordinatorEntity, LightEntity):
     """An entity using CoordinatorEntity.
 
