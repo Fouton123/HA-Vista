@@ -19,6 +19,7 @@ SYSTEM_DATA = "data.json"
 class SerialComm():
     """Serial Interface"""
     line = None
+    arm = None
 
     def __init__(self, port, id=None):
         """Initialize the Serial port."""

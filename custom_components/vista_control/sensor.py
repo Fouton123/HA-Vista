@@ -33,7 +33,7 @@ async def async_setup_entry(
     serialSensor = SerialSensor(sensor)
     armDate = ArmSensor("Arm Date", serialSensor, "DATE", sensor.id)
     armTime = ArmSensor("Arm Time", serialSensor, "TIME", sensor.id)
-    armStat = ArmSensor("Arm Status", serialSensor, "STAT", sensor.id)
+    armStat = ArmSensor("Arm Status", serialSensor, "STAT", sensor.id, sensor)
     armUser = ArmSensor("Arm User", serialSensor, "USER", sensor.id)
     
     zoneDate = ZonesSensor("Zone Date", serialSensor, "DATE", sensor.id)
@@ -179,7 +179,7 @@ class ZonesSensor(SensorEntity):
 class ArmSensor(SensorEntity):
     _attr_has_entity_name = True
 
-    def __init__(self, name, serialSensor, data, device_id):
+    def __init__(self, name, serialSensor, data, device_id, sensor=None):
 
         self._attr_name = name
         self._icon = "mdi:lock"
@@ -191,6 +191,7 @@ class ArmSensor(SensorEntity):
         self.data = data
         self.set_deice_class()
         self._serial_loop_task = None
+        self.sensor = sensor
 
 
     async def async_added_to_hass(self):
@@ -215,10 +216,12 @@ class ArmSensor(SensorEntity):
 
         if str(msg[0]) == "07" and self.data == "STAT":
             self._state = "Armed"
+            self.sensor.arm = "Armed"
             self._icon = "mdi:lock"
 
         if str(msg[0]) == "08" and self.data == "STAT":
             self._state = "Disarmed"
+            self.sensor.arm = "Disarmed"
             self._icon = "mdi:lock-open"
 
     @callback

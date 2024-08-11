@@ -50,8 +50,12 @@ class vistaBaseStation(AlarmControlPanelEntity):
 
     async def async_update(self):
         """Update the state of the device."""
-        self._attr_state = self._attr_state
-
+        if self.serial_client.arm == "Disarmed":
+            self._attr_state = STATE_ALARM_DISARMED
+        elif self.serial_client.arm == "Armed":
+            self._attr_state = STATE_ALARM_ARMED_AWAY
+        else:
+            self._attr_state = self._attr_state
         #await self.serial_client.update()
         #self._attr_available = self.serial_client.is_available
         #armed = self.serial_client.is_armed
