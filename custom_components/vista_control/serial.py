@@ -46,11 +46,15 @@ class SerialComm():
         
     async def get_arm_stat(self):
         await self.serial_send('08as0064')
-        msg1 = await self.serial_read()
-        msg2 = await self.serial_read()
-        msg3 = await self.serial_read()
-        _LOGGER.error(f'{msg1} {msg2} {msg3}')
-        partitions = msg2[4:12]
+
+        msg = "XXXX"
+        timeout = 0
+        while msg[:4] != '10AS' or timeout < 20:
+            msg = await self.serial_read()
+            timeout = timeout + 1
+
+        _LOGGER.error(f'{msg}')
+        partitions = msg[4:12]
         self.arm = "Disarmed"
         for i in partitions:
             if i != "D":
@@ -58,13 +62,15 @@ class SerialComm():
 
     async def get_zone_stat(self):
         await self.serial_send('08as0064')
-        msg1 = await self.serial_read()
-        msg2 = await self.serial_read()
-        msg3 = await self.serial_read()
-        msg4 = await self.serial_read()
-        msg5 = await self.serial_read()
-        _LOGGER.error(f'{msg1} {msg2} {msg5}')
-        self.zones = msg2[5:101]
+        
+        msg = "XXXX"
+        timeout = 0
+        while msg[:4] != '69ZS' or timeout < 20:
+            msg = await self.serial_read()
+            timeout = timeout + 1
+        
+        _LOGGER.error(f'{msg}')
+        self.zones = msg[5:101]
 
                
     def exists(self):
