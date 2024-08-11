@@ -22,7 +22,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
 
     serial_client = SerialComm(serial_port, config_entry.entry_id)
-
+    await serial_client.get_zone_stat()
+    await serial_client.get_arm_stat()
+    
     if not serial_client.exists():
         raise ConfigEntryNotReady
 
