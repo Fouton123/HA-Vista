@@ -52,7 +52,7 @@ async def async_setup_entry(
 class ZoneSensor(SensorEntity):
     _attr_has_entity_name = True
 
-    def __init__(self, name, zone_id, serialSensor, device_id, stat):
+    def __init__(self, name, zone_id, serialSensor, device_id):
         self._attr_name = name
         """Initialize the Reddit sensor."""
         unique_id =  f'vista_zone_{zone_id}'
