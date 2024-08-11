@@ -43,6 +43,9 @@ class SerialComm():
         path = f'{base_path}/{SYSTEM_DATA}'
         f = open (path, "r")
         self._sys_data = json.loads(f.read())
+
+        self.get_arm_stat()
+        self.get_zone_stat()
         
     def get_arm_stat(self):
         self.serial_send('08as0064')
