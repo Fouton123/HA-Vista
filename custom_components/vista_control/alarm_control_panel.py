@@ -74,15 +74,15 @@ class vistaBaseStation(AlarmControlPanelEntity):
             self._attr_state = self._attr_state
             _LOGGER.warn(f'incorrect code length')
         else:
-            _LOGGER.error(f'{code} DISARM')
+            try:
+                id = self.sys_data['codes'][str(code)]
+                message = f'0Ead{id}{code}00'
+                message = calc_checksum(message)    
+                await self.serial_client.serial_send(message + '\r\n')
+            except:
+                _LOGGER.warn(f'incorrect code')
 
-            id = self.sys_data['codes'][str(code)]
-            message = f'0Ead{id}{code}00'
-            message = calc_checksum(message)    
-            await self.serial_client.serial_send(message + '\r\n')
             
-            self._attr_state = STATE_ALARM_DISARMED
-
     async def async_alarm_arm_away(self, code=None):
         """Send arm away command. Uses custom mode."""
         #await self.serial_client.disarm()
@@ -90,10 +90,10 @@ class vistaBaseStation(AlarmControlPanelEntity):
             self._attr_state = self._attr_state
             _LOGGER.warn(f'incorrect code length')
         else:
-            _LOGGER.error(f'{code} ARM')
-
-            id = self.sys_data['codes'][str(code)]
-            message = f'0Eaa{id}{code}00'
-            message = calc_checksum(message)    
-            await self.serial_client.serial_send(message + '\r\n')
-            self._attr_state = STATE_ALARM_ARMED_AWAY
+            try:
+                id = self.sys_data['codes'][str(code)]
+                message = f'0Eaa{id}{code}00'
+                message = calc_checksum(message)    
+                await self.serial_client.serial_send(message + '\r\n')
+            except:
+                _LOGGER.warn(f'incorrect code')

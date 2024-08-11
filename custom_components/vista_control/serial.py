@@ -20,6 +20,7 @@ class SerialComm():
     """Serial Interface"""
     line = None
     arm = None
+    zones = None
 
     def __init__(self, port, id=None):
         """Initialize the Serial port."""
@@ -42,7 +43,30 @@ class SerialComm():
         path = f'{base_path}/{SYSTEM_DATA}'
         f = open (path, "r")
         self._sys_data = json.loads(f.read())
+        
+    def get_arm_stat(self):
+        self.serial_send('08as0064')
+        msg1 = self.serial_read()
+        msg2 = self.serial_read()
+        msg3 = self.serial_read()
+        _LOGGER.error(f'{msg1} {msg2} {msg3}')
+        partitions = msg2[4:12]
+        self.arm = "Disarmed"
+        for i in partitions:
+            if i != "D":
+                self.arm = "Armed"
 
+    def get_zone_stat(self):
+        self.serial_send('08as0064')
+        msg1 = self.serial_read()
+        msg2 = self.serial_read()
+        msg3 = self.serial_read()
+        msg4 = self.serial_read()
+        msg5 = self.serial_read()
+        _LOGGER.error(f'{msg1} {msg2} {msg5}')
+        self.zones = msg2[5:101]
+
+               
     def exists(self):
         """Return if serial port exists"""
         return True

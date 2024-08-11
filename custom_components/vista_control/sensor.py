@@ -43,7 +43,7 @@ async def async_setup_entry(
     sensors = [serialSensor, armDate, armTime, armStat, armUser, zoneDate, zoneTime, zoneStat, zoneZone]
     
     for i in sys_data["zones"].keys():
-        tmp_sense = ZoneSensor(sys_data["zones"][i],i, serialSensor, sensor.id)
+        tmp_sense = ZoneSensor(sys_data["zones"][i],i, serialSensor, sensor.id, sensor.zones[int(i)-1])
         sensors.append(tmp_sense)
         hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, tmp_sense.stop_serial_read)
    
@@ -52,17 +52,21 @@ async def async_setup_entry(
 class ZoneSensor(SensorEntity):
     _attr_has_entity_name = True
 
-    def __init__(self, name, zone_id, serialSensor, device_id):
+    def __init__(self, name, zone_id, serialSensor, device_id, stat):
         self._attr_name = name
         """Initialize the Reddit sensor."""
-        self._icon = "mdi:alarm-light-outline"
         unique_id =  f'vista_zone_{zone_id}'
         self._attr_unique_id = unique_id
         self._attr_device_info =  device_info(device_id)
         self._zone_id= zone_id
         self._serialSensor = serialSensor
-        self._state = None
         self._serial_loop_task = None
+        if stat == "0":
+            self._state = "Restore"
+            self._icon = "mdi:alarm-light-off-outline"
+        else:
+            self._state = "Fault"
+            self._icon = "mdi:alarm-light-outline"
 
 
     async def async_added_to_hass(self):
