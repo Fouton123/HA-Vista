@@ -43,7 +43,7 @@ async def async_setup_entry(
     sensors = [serialSensor, armDate, armTime, armStat, armUser, zoneDate, zoneTime, zoneStat, zoneZone]
     
     for i in sys_data["zones"].keys():
-        tmp_sense = ZoneSensor(sys_data["zones"][i],i, serialSensor, sensor.id, sensor.zones[int(i)-1])
+        tmp_sense = ZoneSensor(sys_data["zones"][i],i, serialSensor, sensor.id)
         sensors.append(tmp_sense)
         hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, tmp_sense.stop_serial_read)
    
@@ -61,13 +61,8 @@ class ZoneSensor(SensorEntity):
         self._zone_id= zone_id
         self._serialSensor = serialSensor
         self._serial_loop_task = None
-        if stat == "0":
-            self._state = "Restore"
-            self._icon = "mdi:alarm-light-off-outline"
-        else:
-            self._state = "Fault"
-            self._icon = "mdi:alarm-light-outline"
-
+        self._state = "Restore"
+        self._icon = "mdi:alarm-light-off-outline"
 
     async def async_added_to_hass(self):
         """Handle when an entity is about to be added to Home Assistant."""
