@@ -39,8 +39,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         sw_version=1.0,
     )
 
-    await serial_client.get_zone_stat()
-    await serial_client.get_arm_stat()
     
     await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
 

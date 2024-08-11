@@ -43,6 +43,7 @@ class SerialComm():
         path = f'{base_path}/{SYSTEM_DATA}'
         f = open (path, "r")
         self._sys_data = json.loads(f.read())
+
         
     async def get_arm_stat(self):
         await self.serial_send('08as0064')
