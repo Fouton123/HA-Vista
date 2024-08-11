@@ -49,7 +49,7 @@ class SerialComm():
 
         msg = "XXXX"
         timeout = 0
-        while msg[:4] != '10AS' or timeout < 20:
+        while msg[:4] != '10AS' or timeout < 4:
             msg = await self.serial_read()
             timeout = timeout + 1
 
@@ -65,7 +65,7 @@ class SerialComm():
         
         msg = "XXXX"
         timeout = 0
-        while msg[:4] != '69ZS' or timeout < 20:
+        while msg[:4] != '69ZS' or timeout < 4:
             msg = await self.serial_read()
             timeout = timeout + 1
         
