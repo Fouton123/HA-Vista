@@ -4,7 +4,7 @@ from pathlib import Path
 
 import logging
 _LOGGER = logging.getLogger(__name__)
-
+DOMAIN = "security_serial"
 
 SYSTEM_DATA = "data.json"
 
