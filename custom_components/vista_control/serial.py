@@ -28,7 +28,7 @@ class SerialComm():
     async def load_json(self):
         base_path = Path(__file__).parent
         path = f'{base_path}/{SYSTEM_DATA}'
-        f = open(path, "r")
+        f = open(path, "r") 
         self._sys_data = json.loads(f.read())
 
         
