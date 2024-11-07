@@ -87,7 +87,7 @@ class SerialComm():
         logged_error = False
         try:
             self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
-            self.udp.bind(('0.0.0.0', int(self.rport)))
+            self.udp.bind(('192.168.20.203', int(self.rport)))
             self.ptup = (self.ip, int(self.port))
         except:
             pass
