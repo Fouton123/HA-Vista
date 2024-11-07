@@ -42,11 +42,12 @@ class vistaBaseStation(AlarmControlPanelEntity):
         self._attr_unique_id = f"vista_alarm_control_panel"
         self._attr_device_info = device_info(serial.id)
         
+        
+    async def load_json(self):
         base_path = Path(__file__).parent
         path = f'{base_path}/{SYSTEM_DATA}'
-        f = open (path, "r")
+        f = await open(path, "r")
         self.sys_data = json.loads(f.read())
-
 
     async def async_update(self):
         """Update the state of the device."""
@@ -70,6 +71,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
     async def async_alarm_disarm(self, code=None):
         """Send disarm command."""
         #await self.serial_client.disarm()
+        self.load_json()
         if len(code) != 4:
             self._attr_state = self._attr_state
             _LOGGER.warn(f'incorrect code length')
@@ -86,6 +88,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
     async def async_alarm_arm_away(self, code=None):
         """Send arm away command. Uses custom mode."""
         #await self.serial_client.disarm()
+        self.load_json()
         if len(code) != 4:
             self._attr_state = self._attr_state
             _LOGGER.warn(f'incorrect code length')
