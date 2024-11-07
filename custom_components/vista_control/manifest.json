@@ -6,6 +6,5 @@
   "config_flow": true,
   "codeowners": ["@fellowship"],
   "iot_class": "local_polling",
-  "version": "2.0",
-  "loggers": ["vista"]
+  "version": "2.0"
 }
