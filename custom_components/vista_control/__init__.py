@@ -1,5 +1,5 @@
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform, CONF_PORT
+from homeassistant.const import Platform, CONF_IP_ADDRESS, CONF_PORT, CONF_BROADCAST_PORT
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
@@ -18,10 +18,12 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     """Set up the Agent component."""
     hass.data.setdefault(DOMAIN, {})
 
-    serial_port = config_entry.data[CONF_PORT]
+    ip = config_entry.data[CONF_IP_ADDRESS]
+    port = config_entry.data[CONF_PORT]
+    rport = config_entry.data[CONF_BROADCAST_PORT]
 
 
-    serial_client = SerialComm(serial_port, config_entry.entry_id)
+    serial_client = SerialComm(ip, port, rport, config_entry.entry_id)
 
     if not serial_client.exists():
         raise ConfigEntryNotReady
