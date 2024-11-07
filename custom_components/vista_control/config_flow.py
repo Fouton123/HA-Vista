@@ -56,7 +56,9 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "port_not_found"
 
         data = {
-            vol.Required(CONF_PORT, CONF_IP_ADDRESS, CONF_BROADCAST_PORT): vol.In(list_ports()),
+            vol.Required(CONF_IP_ADDRESS): str,
+            vol.Required(CONF_PORT): int,
+            vol.Required(CONF_BROADCAST_PORT): int,
         }
 
         return self.async_show_form(
