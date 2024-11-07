@@ -275,6 +275,8 @@ class SerialSensor(SensorEntity):
     async def serial_read(self, **kwargs):
         while True:
             self._state = await self._serialSensor.serial_read()
+            
+            _LOGGER.error(self._state)
 
     @callback
     def stop_serial_read(self, event):
