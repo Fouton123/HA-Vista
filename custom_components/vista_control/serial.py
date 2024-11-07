@@ -89,7 +89,7 @@ class SerialComm():
             self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
             self.udp.bind(('192.168.20.203', int(self.rport)))
             self.ptup = (self.ip, int(self.port))
-        except:
-            pass
+        except Exception as e:
+            _LOGGER.error("Failed", e)
         else:
             _LOGGER.info("Serial device %s connected", self._port)
