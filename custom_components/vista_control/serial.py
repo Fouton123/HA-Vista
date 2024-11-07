@@ -74,10 +74,10 @@ class SerialComm():
         while True:
             if self._interupt == False:
                 try:
-                    line = await self.udp.recv(1024)
+                    line = self.udp.recv(1024)
                     _LOGGER.info(line)
-                except:
-                    break
+                except Exception as e:
+                    _LOGGER.info("error", e)
                 else:
                     self.line = line[0].decode("utf-8").strip()
 
