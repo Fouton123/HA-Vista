@@ -75,7 +75,7 @@ class SerialComm():
             if self._interupt == False:
                 try:
                     line = await self.udp.recv(1024)
-                    line = line[0].decode("utf-8")
+                    self.line = line[0].decode("utf-8")
                 except:
                     break
                 else:
