@@ -6,13 +6,6 @@ from pathlib import Path
 import logging
 _LOGGER = logging.getLogger(__name__)
 
-DEFAULT_BAUDRATE = 9600
-DEFAULT_BYTESIZE = serial_asyncio.serial.EIGHTBITS
-DEFAULT_PARITY = serial_asyncio.serial.PARITY_NONE
-DEFAULT_STOPBITS = serial_asyncio.serial.STOPBITS_ONE
-DEFAULT_XONXOFF = False
-DEFAULT_RTSCTS = False
-DEFAULT_DSRDTR = False
 
 SYSTEM_DATA = "data.json"
 
