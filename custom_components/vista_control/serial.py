@@ -83,7 +83,7 @@ class SerialComm():
                 except Exception as e:
                     _LOGGER.info("error", e)
                 else:
-                    self.line = line[0].decode("utf-8").strip()
+                    self.line = line[0].decode("utf-8")
 
                     return self.line
 
