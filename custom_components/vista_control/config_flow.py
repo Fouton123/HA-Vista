@@ -24,39 +24,11 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
-            ip_address = user_input[CONF_IP_ADDRESS]
-            port = user_input[CONF_PORT]
-            rport = user_input[CONF_BROADCAST_PORT]
-
-            serial_client = SerialComm(ip_address, port, rport)
-            if serial_client.exists():
-                # Only a single instance of the integration
-                if self._async_current_entries():
-                    return self.async_abort(reason="single_instance_allowed")
-
-                id = secrets.token_hex(6)
-                await self.async_set_unique_id(id)
-
-                self._abort_if_unique_id_configured(
-                    updates={
-                        ip_address: user_input[CONF_IP_ADDRESS],
-                        port: user_input[CONF_PORT],
-                        rport: user_input[CONF_BROADCAST_PORT],
-                    }
-                )
-
-                self.device_config = {
-                    CONF_IP_ADDRESS: ip_address,
-                    CONF_PORT: port,
-                    CONF_BROADCAST_PORT: rport,
-                }
-
-                return await self._create_entry('Vista Control')
-            
-            errors["base"] = "port_not_found"
-
+            pass
         data = {
+            vol.Required(CONF_IP_ADDRESS): str,
             vol.Required(CONF_PORT): str,
+            vol.Required(CONF_BROADCAST_PORT): str,
         }
 
         return self.async_show_form(
