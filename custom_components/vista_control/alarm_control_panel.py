@@ -11,6 +11,7 @@ from .helpers import calc_checksum, device_info
 
 from pathlib import Path
 import json
+import aiofiles
 import logging
 _LOGGER = logging.getLogger(__name__)
 ICON = "mdi:security"
@@ -71,7 +72,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
     async def async_alarm_disarm(self, code=None):
         """Send disarm command."""
         #await self.serial_client.disarm()
-        self.load_json()
+        await self.load_json()
         if len(code) != 4:
             self._attr_state = self._attr_state
             _LOGGER.warn(f'incorrect code length')
@@ -88,7 +89,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
     async def async_alarm_arm_away(self, code=None):
         """Send arm away command. Uses custom mode."""
         #await self.serial_client.disarm()
-        self.load_json()
+        await self.load_json()
         if len(code) != 4:
             self._attr_state = self._attr_state
             _LOGGER.warn(f'incorrect code length')

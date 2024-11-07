@@ -8,6 +8,9 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .const import DOMAIN, CONNECTION, MANUFACTURER, MODEL
 from .serial import SerialComm
 
+import logging
+_LOGGER = logging.getLogger(__name__)
+
 ATTRIBUTION = "Vista"
 DEFAULT_BRAND = "Vista Vista"
 
@@ -23,6 +26,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     rport = config_entry.data[CONF_BROADCAST_PORT]
 
 
+    _LOGGER.info("Init - Security Initialize") 
     serial_client = SerialComm(ip, port, rport, config_entry.entry_id)
     await serial_client.load_json()
     if not serial_client.exists():
