@@ -25,6 +25,7 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             rport = user_input[CONF_BROADCAST_PORT]
 
             serial_client = SerialComm(ip_address, port, rport)
+            await serial_client.load_json()
             if serial_client.exists():
                 # Only a single instance of the integration
                 if self._async_current_entries():

@@ -24,8 +24,6 @@ class SerialComm():
         self.id = id
         self.udp = None
         self.ptup = None
-
-        self.load_json()
         
     async def load_json(self):
         base_path = Path(__file__).parent
