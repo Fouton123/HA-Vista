@@ -16,6 +16,8 @@ class SerialComm():
 
     def __init__(self, ip, port, rport, id=None):
         """Initialize the Serial port."""
+        
+        _LOGGER.info("Security Initialize")
         self.ip = ip
         self.port = port
         self.rport = rport
@@ -68,6 +70,8 @@ class SerialComm():
 
     async def serial_read(self):
         """Read the data from the port."""
+        
+        _LOGGER.info("Security Read")
         if self.udp is None:
             await self.serial_open()
 
@@ -85,6 +89,8 @@ class SerialComm():
 
     async def serial_open(self):
         logged_error = False
+        
+        _LOGGER.info("Security Open")
         try:
             self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
             self.udp.bind(('192.168.20.203', int(self.rport)))
