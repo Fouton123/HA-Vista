@@ -6,7 +6,7 @@ from homeassistant.const import (
     STATE_ALARM_DISARMED,
 )
 
-from .const import CONNECTION, DOMAIN
+from .const import CONNECTION, DOMAIN 
 from .helpers import calc_checksum, device_info
 
 from pathlib import Path
