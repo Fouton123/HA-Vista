@@ -75,6 +75,7 @@ class SerialComm():
             if self._interupt == False:
                 try:
                     line = await self.udp.recv(1024)
+                    _LOGGER.info(line)
                 except:
                     break
                 else:
