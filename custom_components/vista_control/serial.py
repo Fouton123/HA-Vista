@@ -25,9 +25,12 @@ class SerialComm():
         self.udp = None
         self.ptup = None
 
+        self.load_json()
+        
+    async def load_json(self):
         base_path = Path(__file__).parent
         path = f'{base_path}/{SYSTEM_DATA}'
-        f = open (path, "r")
+        f = await open(path, "r")
         self._sys_data = json.loads(f.read())
 
         
@@ -78,7 +81,7 @@ class SerialComm():
         while True:
             if self._interupt == False:
                 try:
-                    line = self.udp.recv(1024)
+                    line = await self.udp.recv(1024)
                     _LOGGER.info(line)
                 except Exception as e:
                     _LOGGER.info("error", e)
