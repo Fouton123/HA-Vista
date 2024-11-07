@@ -2,7 +2,7 @@ import voluptuous as vol
 import secrets
 
 from homeassistant import config_entries
-from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_IP_ADDRESS, CONF_PORT, CONF_BROADCAST_PORT
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .serial import SerialComm
@@ -24,9 +24,11 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
-            serial_port = user_input[CONF_PORT]
+            ip_address = user_input[CONF_IP_ADDRESS]
+            port = user_input[CONF_PORT]
+            rport = user_input[CONF_BROADCAST_PORT]
 
-            serial_client = SerialComm(serial_port)
+            serial_client = SerialComm(ip_address, port, rport)
             if serial_client.exists():
                 # Only a single instance of the integration
                 if self._async_current_entries():
@@ -37,12 +39,16 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
                 self._abort_if_unique_id_configured(
                     updates={
-                        serial_port: user_input[CONF_PORT],
+                        ip_address: user_input[CONF_IP_ADDRESS],
+                        port: user_input[CONF_PORT],
+                        rport: user_input[CONF_BROADCAST_PORT],
                     }
                 )
 
                 self.device_config = {
-                    CONF_PORT: serial_port,
+                    CONF_IP_ADDRESS: ip_address,
+                    CONF_PORT: port,
+                    CONF_BROADCAST_PORT: rport,
                 }
 
                 return await self._create_entry('Vista Control')
@@ -50,7 +56,7 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "port_not_found"
 
         data = {
-            vol.Required(CONF_PORT): vol.In(list_ports()),
+            vol.Required(CONF_PORT, CONF_IP_ADDRESS, CONF_BROADCAST_PORT): vol.In(list_ports()),
         }
 
         return self.async_show_form(

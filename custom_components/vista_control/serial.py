@@ -1,5 +1,5 @@
 from serial import SerialException
-import serial_asyncio
+import socket
 import json
 from pathlib import Path
 
@@ -22,22 +22,14 @@ class SerialComm():
     arm = None
     zones = None
 
-    def __init__(self, port, id=None):
+    def __init__(self, ip, port, rport, id=None):
         """Initialize the Serial port."""
-        self._port = port
+        self.ip = ip
+        self.port = port
+        self.rport = rport
         self.id = id
-        self._baudrate = DEFAULT_BAUDRATE
-        self._bytesize = DEFAULT_BYTESIZE
-        self._parity = DEFAULT_PARITY
-        self._stopbits = DEFAULT_STOPBITS
-        self._xonxoff = DEFAULT_XONXOFF
-        self._rtscts = DEFAULT_RTSCTS
-        self._dsrdtr = DEFAULT_DSRDTR
-        self._interupt = False
-        self._serial_loop_task = None
-        self._attributes = None
-        self.reader = None
-        self.writer = None
+        self.udp = None
+        self.ptup = None
 
         base_path = Path(__file__).parent
         path = f'{base_path}/{SYSTEM_DATA}'
@@ -76,21 +68,21 @@ class SerialComm():
         return id
 
     async def serial_send(self, message):
-        if self.writer is None:
+        if self.ptup is None:
             await self.serial_open()
         self._interupt = True
-        self.writer.write(message.encode('utf-8'))
+        self.udp.sendto(message.encode('utf-8'), self.ptup)
         self._interupt = False
 
     async def serial_read(self):
         """Read the data from the port."""
-        if self.reader is None:
+        if self.udp is None:
             await self.serial_open()
 
         while True:
             if self._interupt == False:
                 try:
-                    line = await self.reader.readline()
+                    line = await self.udp.recv(1024)[0]
                 except SerialException as exc:
                     _LOGGER.exception(
                         "Error while reading serial device %s: %s", self._port, exc
@@ -105,7 +97,9 @@ class SerialComm():
     async def serial_open(self):
         logged_error = False
         try:
-            self.reader, self.writer = await serial_asyncio.open_serial_connection(url=self._port, baudrate=self._baudrate, bytesize=self._bytesize, parity=self._parity, stopbits=self._stopbits, xonxoff=self._xonxoff, rtscts=self._rtscts, dsrdtr=self._dsrdtr)
+            self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+            self.udp.bind(('0.0.0.0', int(self.rport)))
+            self.ptup = (self.ip, int(self.port))
         except SerialException as exc:
                 if not logged_error:
                     _LOGGER.exception(
