@@ -258,6 +258,8 @@ class SerialSensor(SensorEntity):
 
     def __init__(self, serial):
         """Initialize the Reddit sensor."""
+        
+        _LOGGER.error("init sensor")
         self._icon = "mdi:serial-port"
         self._attr_unique_id = 'serial_sensor'
         self._attr_device_info =  device_info(serial.id)
