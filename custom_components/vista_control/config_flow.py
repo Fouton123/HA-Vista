@@ -57,8 +57,6 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         data = {
             vol.Required(CONF_PORT): str,
-            vol.Required(CONF_IP_ADDRESS): str,
-            vol.Required(CONF_BROADCAST_PORT): str,
         }
 
         return self.async_show_form(
