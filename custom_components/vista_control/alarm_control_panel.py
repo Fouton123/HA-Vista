@@ -14,7 +14,6 @@ import json
 import aiofiles
 import logging
 _LOGGER = logging.getLogger(__name__)
-DOMAIN = "security_panel"
 
 ICON = "mdi:security"
 
