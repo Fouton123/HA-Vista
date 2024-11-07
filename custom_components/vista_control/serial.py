@@ -1,4 +1,3 @@
-from serial import SerialException
 import socket
 import json
 from pathlib import Path
@@ -76,11 +75,7 @@ class SerialComm():
             if self._interupt == False:
                 try:
                     line = await self.udp.recv(1024)[0]
-                except SerialException as exc:
-                    _LOGGER.exception(
-                        "Error while reading serial device %s: %s", self._port, exc
-                    )
-                    await self._handle_error()
+                except:
                     break
                 else:
                     self.line = line.decode("utf-8").strip()
@@ -93,14 +88,7 @@ class SerialComm():
             self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
             self.udp.bind(('0.0.0.0', int(self.rport)))
             self.ptup = (self.ip, int(self.port))
-        except SerialException as exc:
-                if not logged_error:
-                    _LOGGER.exception(
-                        "Unable to connect to the serial device %s: %s. Will retry",
-                        self._port,
-                        exc,
-                    )
-                    logged_error = True
-                await self._handle_error()
+        except:
+            pass
         else:
             _LOGGER.info("Serial device %s connected", self._port)

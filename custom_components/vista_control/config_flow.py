@@ -6,11 +6,7 @@ from homeassistant.const import CONF_IP_ADDRESS, CONF_PORT, CONF_BROADCAST_PORT
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .serial import SerialComm
-from .helpers import list_ports
 from .const import DOMAIN
-
-DEFAULT_PORT = 8090
-
 
 class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle an Agent config flow."""
