@@ -47,7 +47,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
     async def load_json(self):
         base_path = Path(__file__).parent
         path = f'{base_path}/{SYSTEM_DATA}'
-        f = await open(path, "r")
+        f = open(path, "r")
         self.sys_data = json.loads(f.read())
 
     async def async_update(self):
@@ -75,7 +75,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         await self.load_json()
         if len(code) != 4:
             self._attr_state = self._attr_state
-            _LOGGER.warn(f'incorrect code length')
+            _LOGGER.error(f'incorrect code length')
         else:
             try:
                 id = self.sys_data['codes'][str(code)]
@@ -83,7 +83,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
                 message = calc_checksum(message)    
                 await self.serial_client.serial_send(message + '\r\n')
             except:
-                _LOGGER.warn(f'incorrect code')
+                _LOGGER.error(f'incorrect code')
 
             
     async def async_alarm_arm_away(self, code=None):
@@ -92,7 +92,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         await self.load_json()
         if len(code) != 4:
             self._attr_state = self._attr_state
-            _LOGGER.warn(f'incorrect code length')
+            _LOGGER.error(f'incorrect code length')
         else:
             try:
                 id = self.sys_data['codes'][str(code)]
@@ -100,4 +100,4 @@ class vistaBaseStation(AlarmControlPanelEntity):
                 message = calc_checksum(message)    
                 await self.serial_client.serial_send(message + '\r\n')
             except:
-                _LOGGER.warn(f'incorrect code')
+                _LOGGER.error(f'incorrect code')
