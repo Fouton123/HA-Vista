@@ -76,7 +76,7 @@ class SerialComm():
             await self.serial_open()
 
         while True:
-            line = await self.udp.recv(1024)
+            line = self.udp.recv(1024)
             self.line = line[0].decode("utf-8")
             return self.line
 
