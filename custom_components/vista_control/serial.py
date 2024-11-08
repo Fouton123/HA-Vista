@@ -92,4 +92,4 @@ class SerialComm():
         except Exception as e:
             _LOGGER.error("Failed", e)
         else:
-            _LOGGER.info("Serial device %s connected", self._port)
+            _LOGGER.info("Serial device %s connected:", self._port)
