@@ -84,10 +84,10 @@ class SerialComm():
     async def serial_open(self):
         logged_error = False
         
-        _LOGGER.info("Security Open")
+        _LOGGER.error("Security Open")
         try:
             self.udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
-            self.udp.bind(('192.168.20.203', int(self.rport)))
+            self.udp.bind(('192.168.20.203', 8236))
             self.ptup = (self.ip, int(self.port))
         except Exception as e:
             _LOGGER.error("Failed", e)
