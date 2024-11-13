@@ -1,10 +1,6 @@
 """Support for Agent DVR Alarm Control Panels."""
-from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity, CodeFormat, AlarmControlPanelEntityFeature
+from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity, CodeFormat, AlarmControlPanelEntityFeature, AlarmControlPanelState
 
-from homeassistant.const import (
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_DISARMED,
-)
 
 from .const import CONNECTION, DOMAIN
 from .helpers import calc_checksum, device_info
@@ -51,11 +47,11 @@ class vistaBaseStation(AlarmControlPanelEntity):
     async def async_update(self):
         """Update the state of the device."""
         if self.serial_client.arm == "Disarmed":
-            self._attr_state = STATE_ALARM_DISARMED
+            return AlarmControlPanelState.DISARMED
         elif self.serial_client.arm == "Armed":
-            self._attr_state = STATE_ALARM_ARMED_AWAY
+            return AlarmControlPanelState.ARMED_AWAY
         else:
-            self._attr_state = self._attr_state
+            return AlarmControlPanelState.DISARMED
         #await self.serial_client.update()
         #self._attr_available = self.serial_client.is_available
         #armed = self.serial_client.is_armed
