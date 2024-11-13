@@ -75,17 +75,9 @@ class SerialComm():
         if self.udp is None:
             await self.serial_open()
 
-        while True:
-            if self._interupt == False:
-                try:
-                    line = self.udp.recv(1024)
-                    _LOGGER.info(line)
-                except Exception as e:
-                    _LOGGER.info("error", e)
-                else:
-                    self.line = line[0].decode("utf-8").strip()
-
-                    return self.line
+        line = self.udp.recv(1024)
+        self.line = line
+        return self.line
 
     async def serial_open(self):
         logged_error = False
