@@ -6,6 +6,7 @@ from .const import CONNECTION, DOMAIN
 from .helpers import calc_checksum, device_info
 
 from pathlib import Path
+import aiofiles
 import json
 import logging
 _LOGGER = logging.getLogger(__name__)
@@ -40,8 +41,9 @@ class vistaBaseStation(AlarmControlPanelEntity):
         
         base_path = Path(__file__).parent
         path = f'{base_path}/{SYSTEM_DATA}'
-        f = open (path, "r")
-        self.sys_data = json.loads(f.read())
+        f = await aiofiles.open(path, mode='r')
+        self.sys_data = json.loads(await f.read())
+        await f.close()
 
 
     async def async_update(self):

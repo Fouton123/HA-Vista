@@ -27,8 +27,10 @@ class SerialComm():
 
         base_path = Path(__file__).parent
         path = f'{base_path}/{SYSTEM_DATA}'
-        f = open (path, "r")
-        self._sys_data = json.loads(f.read())
+        f = await aiofiles.open(path, mode='r')
+        self.sys_data = json.loads(await f.read())
+        await f.close()
+
 
         
     async def get_arm_stat(self):

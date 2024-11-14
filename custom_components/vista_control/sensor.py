@@ -25,8 +25,10 @@ async def async_setup_entry(
     
     base_path = Path(__file__).parent
     path = f'{base_path}/{SYSTEM_DATA}'
-    f = open (path, "r")
-    sys_data = json.loads(f.read())
+    f = await aiofiles.open(path, mode='r')
+    self.sys_data = json.loads(await f.read())
+    await f.close()
+
     
     """Set up the Serial sensor platform."""
     sensor = hass.data[DOMAIN][config_entry.entry_id][CONNECTION]
