@@ -24,14 +24,6 @@ class SerialComm():
         self.id = id
         self.udp = None
         self.ptup = None
-
-        base_path = Path(__file__).parent
-        path = f'{base_path}/{SYSTEM_DATA}'
-        f = await aiofiles.open(path, mode='r')
-        self.sys_data = json.loads(await f.read())
-        await f.close()
-
-
         
     async def get_arm_stat(self):
         await self.serial_send('08as0064')

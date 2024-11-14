@@ -38,13 +38,6 @@ class vistaBaseStation(AlarmControlPanelEntity):
         self._attr_name = CONST_ALARM_CONTROL_PANEL_NAME
         self._attr_unique_id = f"vista_alarm_control_panel"
         self._attr_device_info = device_info(serial.id)
-        
-        base_path = Path(__file__).parent
-        path = f'{base_path}/{SYSTEM_DATA}'
-        f = await aiofiles.open(path, mode='r')
-        self.sys_data = json.loads(await f.read())
-        await f.close()
-
 
     async def async_update(self):
         """Update the state of the device."""
@@ -66,6 +59,13 @@ class vistaBaseStation(AlarmControlPanelEntity):
         #    self._attr_state = STATE_ALARM_DISARMED
 
     async def async_alarm_disarm(self, code=None):
+                
+        base_path = Path(__file__).parent
+        path = f'{base_path}/{SYSTEM_DATA}'
+        f = await aiofiles.open(path, mode='r')
+        self.sys_data = json.loads(await f.read())
+        await f.close()
+
         """Send disarm command."""
         #await self.serial_client.disarm()
         if len(code) != 4:
@@ -82,6 +82,13 @@ class vistaBaseStation(AlarmControlPanelEntity):
 
             
     async def async_alarm_arm_away(self, code=None):
+                        
+        base_path = Path(__file__).parent
+        path = f'{base_path}/{SYSTEM_DATA}'
+        f = await aiofiles.open(path, mode='r')
+        self.sys_data = json.loads(await f.read())
+        await f.close()
+
         """Send arm away command. Uses custom mode."""
         #await self.serial_client.disarm()
         if len(code) != 4:
