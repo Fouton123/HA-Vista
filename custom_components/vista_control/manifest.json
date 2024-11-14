@@ -2,7 +2,7 @@
   "domain": "vista_control",
   "name": "Vista Control",
   "documentation": "https://github.com/Fouton123/HA-Vista",
-  "requirements": ["pyserial-asyncio==0.6"],
+  "requirements": ["pyserial-asyncio==0.6", "aiofiles"],
   "config_flow": true,
   "codeowners": ["@fellowship"],
   "iot_class": "local_polling",
