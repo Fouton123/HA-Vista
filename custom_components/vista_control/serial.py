@@ -75,7 +75,7 @@ class SerialComm:
         try:
             _LOGGER.info("Security Wait")
             line = await self.udp.recvfrom()
-            self.line = line[0]
+            self.line = line[0].decode("utf-8")
         except Exception as e:
             _LOGGER.error("Failed %s", e)
         return self.line
