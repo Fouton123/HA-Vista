@@ -2,7 +2,7 @@
   "domain": "vista_control",
   "name": "Vista Control",
   "documentation": "https://github.com/Fouton123/HA-Vista",
-  "requirements": ["aiofiles==24.1.0"],
+  "requirements": ["aiofiles==24.1.0", "asyncudp"],
   "config_flow": true,
   "codeowners": ["@fellowship"],
   "iot_class": "local_polling",

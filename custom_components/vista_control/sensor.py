@@ -1,7 +1,9 @@
 """Support for reading data from a serial port."""
+
 from __future__ import annotations
 import json
 import logging
+import aiofiles
 from pathlib import Path
 from datetime import timedelta
 
@@ -19,17 +21,16 @@ SYSTEM_DATA = "data.json"
 
 _LOGGER = logging.getLogger(__name__)
 
+
 async def async_setup_entry(
     hass, config_entry, async_add_entities, discovery_info=None
 ):
-    
     base_path = Path(__file__).parent
-    path = f'{base_path}/{SYSTEM_DATA}'
-    f = await aiofiles.open(path, mode='r')
-    self.sys_data = json.loads(await f.read())
+    path = f"{base_path}/{SYSTEM_DATA}"
+    f = await aiofiles.open(path, mode="r")
+    sys_data = json.loads(await f.read())
     await f.close()
 
-    
     """Set up the Serial sensor platform."""
     sensor = hass.data[DOMAIN][config_entry.entry_id][CONNECTION]
     serialSensor = SerialSensor(sensor)
@@ -37,19 +38,30 @@ async def async_setup_entry(
     armTime = ArmSensor("Arm Time", serialSensor, "TIME", sensor.id)
     armStat = ArmSensor("Arm Status", serialSensor, "STAT", sensor.id, sensor)
     armUser = ArmSensor("Arm User", serialSensor, "USER", sensor.id)
-    
+
     zoneDate = ZonesSensor("Zone Date", serialSensor, "DATE", sensor.id)
     zoneTime = ZonesSensor("Zone Time", serialSensor, "TIME", sensor.id)
     zoneStat = ZonesSensor("Zone Status", serialSensor, "STAT", sensor.id)
     zoneZone = ZonesSensor("Zone ID", serialSensor, "ZONE", sensor.id, sys_data)
-    sensors = [serialSensor, armDate, armTime, armStat, armUser, zoneDate, zoneTime, zoneStat, zoneZone]
-    
+    sensors = [
+        serialSensor,
+        armDate,
+        armTime,
+        armStat,
+        armUser,
+        zoneDate,
+        zoneTime,
+        zoneStat,
+        zoneZone,
+    ]
+
     for i in sys_data["zones"].keys():
-        tmp_sense = ZoneSensor(sys_data["zones"][i],i, serialSensor, sensor.id)
+        tmp_sense = ZoneSensor(sys_data["zones"][i], i, serialSensor, sensor.id)
         sensors.append(tmp_sense)
         hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, tmp_sense.stop_serial_read)
-   
+
     async_add_entities(sensors, True)
+
 
 class ZoneSensor(SensorEntity):
     _attr_has_entity_name = True
@@ -57,10 +69,10 @@ class ZoneSensor(SensorEntity):
     def __init__(self, name, zone_id, serialSensor, device_id):
         self._attr_name = name
         """Initialize the Reddit sensor."""
-        unique_id =  f'vista_zone_{zone_id}'
+        unique_id = f"vista_zone_{zone_id}"
         self._attr_unique_id = unique_id
-        self._attr_device_info =  device_info(device_id)
-        self._zone_id= zone_id
+        self._attr_device_info = device_info(device_id)
+        self._zone_id = zone_id
         self._serialSensor = serialSensor
         self._serial_loop_task = None
         self._state = "Restore"
@@ -68,13 +80,11 @@ class ZoneSensor(SensorEntity):
 
     async def async_added_to_hass(self):
         """Handle when an entity is about to be added to Home Assistant."""
-        self._serial_loop_task = self.hass.loop.create_task(
-            self.sensorUpdate()
-        )
-        
+        self._serial_loop_task = self.hass.loop.create_task(self.sensorUpdate())
+
     async def sensorUpdate(self, **kwargs):
         msg = decode_message(self._serialSensor._state)
-        #Zone Status
+        # Zone Status
         if str(msg[0]) == "F5" and str(msg[1]) == self._zone_id:
             self._state = "Fault"
             self._icon = "mdi:alarm-light-outline"
@@ -103,6 +113,7 @@ class ZoneSensor(SensorEntity):
         """Retrieve latest state."""
         await self.sensorUpdate()
 
+
 class ZonesSensor(SensorEntity):
     _attr_has_entity_name = True
 
@@ -110,26 +121,23 @@ class ZonesSensor(SensorEntity):
         self._attr_name = name
         """Initialize the Reddit sensor."""
         self._icon = "mdi:lock"
-        unique_id =  f'vista_{name}'
+        unique_id = f"vista_{name}"
         self._attr_unique_id = unique_id
         self._zonelist = zonelist
-        self._attr_device_info =  device_info(device_id)
+        self._attr_device_info = device_info(device_id)
         self._serialSensor = serialSensor
         self._state = None
         self.data = data
         self.set_deice_class()
         self._serial_loop_task = None
 
-
     async def async_added_to_hass(self):
         """Handle when an entity is about to be added to Home Assistant."""
-        self._serial_loop_task = self.hass.loop.create_task(
-            self.sensorUpdate()
-        )
-        
+        self._serial_loop_task = self.hass.loop.create_task(self.sensorUpdate())
+
     async def sensorUpdate(self, **kwargs):
         msg = decode_message(self._serialSensor._state)
-        #Zone Status
+        # Zone Status
         if str(msg[0]) == "F5" or str(msg[0]) == "F6":
             if self.data == "DATE":
                 self._state = dt.utcnow().date()
@@ -177,16 +185,16 @@ class ZonesSensor(SensorEntity):
         """Retrieve latest state."""
         await self.sensorUpdate()
 
+
 class ArmSensor(SensorEntity):
     _attr_has_entity_name = True
 
     def __init__(self, name, serialSensor, data, device_id, sensor=None):
-
         self._attr_name = name
         self._icon = "mdi:lock"
-        unique_id =  f'vista_{name}'
+        unique_id = f"vista_{name}"
         self._attr_unique_id = unique_id
-        self._attr_device_info =  device_info(device_id)
+        self._attr_device_info = device_info(device_id)
         self._serialSensor = serialSensor
         self._state = None
         self.data = data
@@ -194,16 +202,13 @@ class ArmSensor(SensorEntity):
         self._serial_loop_task = None
         self.sensor = sensor
 
-
     async def async_added_to_hass(self):
         """Handle when an entity is about to be added to Home Assistant."""
-        self._serial_loop_task = self.hass.loop.create_task(
-            self.sensorUpdate()
-        )
-        
+        self._serial_loop_task = self.hass.loop.create_task(self.sensorUpdate())
+
     async def sensorUpdate(self, **kwargs):
         msg = decode_message(self._serialSensor._state)
-        #Zone Status
+        # Zone Status
         if str(msg[0]) == "07" or str(msg[0]) == "08":
             if self.data == "DATE":
                 self._state = dt.utcnow().date()
@@ -253,6 +258,7 @@ class ArmSensor(SensorEntity):
         """Retrieve latest state."""
         await self.sensorUpdate()
 
+
 class SerialSensor(SensorEntity):
     _attr_has_entity_name = True
     _attr_name = "Vista-Serial"
@@ -261,24 +267,21 @@ class SerialSensor(SensorEntity):
     def __init__(self, serial):
         """Initialize the Reddit sensor."""
         self._icon = "mdi:serial-port"
-        self._attr_unique_id = 'serial_sensor'
-        self._attr_device_info =  device_info(serial.id)
+        self._attr_unique_id = "serial_sensor"
+        self._attr_device_info = device_info(serial.id)
         self._serialSensor = serial
         self._state = None
         self._serial_loop_task = None
 
-
     async def async_added_to_hass(self):
         """Handle when an entity is about to be added to Home Assistant."""
-        self._serial_loop_task = self.hass.loop.create_task(
-            self.serial_read()
-        )
-        
+        self._serial_loop_task = self.hass.loop.create_task(self.serial_read())
+
     async def serial_read(self, **kwargs):
         while True:
             _LOGGER.info("Security Read")
             self._state = await self._serialSensor.serial_read()
-            _LOGGER.info("Security", self._state)
+            _LOGGER.info("Security %s", self._state)
 
     @callback
     def stop_serial_read(self, event):
