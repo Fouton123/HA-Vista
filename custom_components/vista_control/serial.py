@@ -75,9 +75,9 @@ class SerialComm:
         try:
             _LOGGER.info("Security Wait")
             line = await self.udp.recvfrom()
+            self.line = line[0]
         except Exception as e:
             _LOGGER.error("Failed %s", e)
-        self.line = line
         return self.line
 
     async def serial_open(self):
