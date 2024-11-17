@@ -50,11 +50,11 @@ class vistaBaseStation(AlarmControlPanelEntity):
     async def async_update(self):
         """Update the state of the device."""
         if self.serial_client.arm == "Disarmed":
-            return AlarmControlPanelState.DISARMED
+            self._state = AlarmControlPanelState.DISARMED
         elif self.serial_client.arm == "Armed":
-            return AlarmControlPanelState.ARMED_AWAY
+            self._state = AlarmControlPanelState.ARMED_AWAY
         else:
-            return AlarmControlPanelState.DISARMED
+            self._state = AlarmControlPanelState.DISARMED
         # await self.serial_client.update()
         # self._attr_available = self.serial_client.is_available
         # armed = self.serial_client.is_armed
@@ -78,7 +78,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         if code != None:
             if len(code) != 4:
                 self._attr_state = self._attr_state
-                _LOGGER.warn(f"incorrect code length")
+                _LOGGER.warning("incorrect code length")
             else:
                 try:
                     id = self.sys_data["codes"][str(code)]
@@ -86,7 +86,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
                     message = calc_checksum(message)
                     await self.serial_client.serial_send(message + "\r\n")
                 except:
-                    _LOGGER.warn(f"incorrect code")
+                    _LOGGER.warning("incorrect code")
 
     async def async_alarm_arm_away(self, code=None):
         base_path = Path(__file__).parent
@@ -100,7 +100,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         if code != None:
             if len(code) != 4:
                 self._attr_state = self._attr_state
-                _LOGGER.warn(f"incorrect code length")
+                _LOGGER.warning("incorrect code length")
             else:
                 try:
                     id = self.sys_data["codes"][str(code)]
@@ -108,4 +108,8 @@ class vistaBaseStation(AlarmControlPanelEntity):
                     message = calc_checksum(message)
                     await self.serial_client.serial_send(message + "\r\n")
                 except:
-                    _LOGGER.warn(f"incorrect code")
+                    _LOGGER.warning("incorrect code")
+
+    def alarm_state(self) -> AlarmControlPanelState | None:
+        """Return the state of the device."""
+        return self._state
