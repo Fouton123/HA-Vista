@@ -57,7 +57,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         else:
             self._state = AlarmControlPanelState.DISARMED
 
-        return self._state
+        return
         # await self.serial_client.update()
         # self._attr_available = self.serial_client.is_available
         # armed = self.serial_client.is_armed
