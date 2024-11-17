@@ -46,6 +46,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         self._attr_name = CONST_ALARM_CONTROL_PANEL_NAME
         self._attr_unique_id = f"vista_alarm_control_panel"
         self._attr_device_info = device_info(serial.id)
+        self._state = AlarmControlPanelState.ARMED_AWAY
 
     async def async_update(self):
         """Update the state of the device."""
