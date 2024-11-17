@@ -44,7 +44,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         """Initialize the alarm control panel."""
         self.serial_client = serial
         self._attr_name = CONST_ALARM_CONTROL_PANEL_NAME
-        self._attr_unique_id = f"vista_alarm_control_panel"
+        self._attr_unique_id = "vista_alarm_control_panel"
         self._attr_device_info = device_info(serial.id)
         self._state = AlarmControlPanelState.ARMED_AWAY
 
@@ -112,7 +112,3 @@ class vistaBaseStation(AlarmControlPanelEntity):
                     await self.serial_client.serial_send(message + "\r\n")
                 except:
                     _LOGGER.warning("incorrect code")
-
-    def alarm_state(self) -> AlarmControlPanelState | None:
-        """Return the state of the device."""
-        return self._state
