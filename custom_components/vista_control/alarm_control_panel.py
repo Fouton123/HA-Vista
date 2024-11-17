@@ -44,25 +44,18 @@ class vistaBaseStation(AlarmControlPanelEntity):
         """Initialize the alarm control panel."""
         self.serial_client = serial
         self._attr_name = CONST_ALARM_CONTROL_PANEL_NAME
-        self._attr_unique_id = "vista_alarm_control_panel"
+        self._attr_unique_id = f"vista_alarm_control_panel"
         self._attr_device_info = device_info(serial.id)
-        self._state = AlarmControlPanelState.ARMED_AWAY
 
     async def async_update(self):
         """Update the state of the device."""
-        if self.serial_client.arm == "Disarmed":
-            self._state = AlarmControlPanelState.DISARMED
-            self._attr_state = AlarmControlPanelState.DISARMED
-            self._attr_alarm_state = AlarmControlPanelState.DISARMED
-        elif self.serial_client.arm == "Armed":
-            self._state = AlarmControlPanelState.ARMED_AWAY
-            self._attr_state = AlarmControlPanelState.ARMED_AWAY
-            self._attr_alarm_state = AlarmControlPanelState.ARMED_AWAY
-        else:
-            self._state = AlarmControlPanelState.DISARMED
-            self._attr_state = AlarmControlPanelState.DISARMED
-            self._attr_alarm_state = AlarmControlPanelState.DISARMED
-            
+        try:
+            if self.serial_client.arm == "Armed":
+                self._attr_alarm_state = AlarmControlPanelState.ARMED_AWAY
+            else:
+                self._attr_alarm_state = AlarmControlPanelState.DISARMED
+        except Exception as e:
+            _LOGGER.error("Failed %s", e)
         # await self.serial_client.update()
         # self._attr_available = self.serial_client.is_available
         # armed = self.serial_client.is_armed
@@ -86,15 +79,16 @@ class vistaBaseStation(AlarmControlPanelEntity):
         if code != None:
             if len(code) != 4:
                 self._attr_state = self._attr_state
-                _LOGGER.warning("incorrect code length")
+                _LOGGER.warn(f"incorrect code length")
             else:
                 try:
                     id = self.sys_data["codes"][str(code)]
                     message = f"0Ead{id}{code}00"
                     message = calc_checksum(message)
                     await self.serial_client.serial_send(message + "\r\n")
+                    self._attr_alarm_state = AlarmControlPanelState.DISARMED
                 except:
-                    _LOGGER.warning("incorrect code")
+                    _LOGGER.warn(f"incorrect code")
 
     async def async_alarm_arm_away(self, code=None):
         base_path = Path(__file__).parent
@@ -108,12 +102,13 @@ class vistaBaseStation(AlarmControlPanelEntity):
         if code != None:
             if len(code) != 4:
                 self._attr_state = self._attr_state
-                _LOGGER.warning("incorrect code length")
+                _LOGGER.warn(f"incorrect code length")
             else:
                 try:
                     id = self.sys_data["codes"][str(code)]
                     message = f"0Eaa{id}{code}00"
                     message = calc_checksum(message)
                     await self.serial_client.serial_send(message + "\r\n")
+                    self._attr_alarm_state = AlarmControlPanelState.ARMED_AWAY
                 except:
-                    _LOGGER.warning("incorrect code")
+                    _LOGGER.warn(f"incorrect code")
