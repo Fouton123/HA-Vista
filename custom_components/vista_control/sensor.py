@@ -63,6 +63,7 @@ class ZoneSensor(SensorEntity):
         self._serial_loop_task = None
         self._state = "Restore"
         self._icon = "mdi:alarm-light-off-outline"
+        self.prev_state = None
 
     async def async_added_to_hass(self):
         """Handle when an entity is about to be added to Home Assistant."""
@@ -71,15 +72,16 @@ class ZoneSensor(SensorEntity):
         )
         
     async def sensorUpdate(self, **kwargs):
-        msg = decode_message(self._serialSensor._state)
-        #Zone Status
-        if str(msg[0]) == "F5" and str(msg[1]) == self._zone_id:
-            self._state = "Fault"
-            self._icon = "mdi:alarm-light-outline"
+        if self.prev_state != self._serialSensor._state:
+            msg = decode_message(self._serialSensor._state)
+            #Zone Status
+            if str(msg[0]) == "F5" and str(msg[1]) == self._zone_id:
+                self._state = "Fault"
+                self._icon = "mdi:alarm-light-outline"
 
-        if str(msg[0]) == "F6" and str(msg[1]) == self._zone_id:
-            self._state = "Restore"
-            self._icon = "mdi:alarm-light-off-outline"
+            if str(msg[0]) == "F6" and str(msg[1]) == self._zone_id:
+                self._state = "Restore"
+                self._icon = "mdi:alarm-light-off-outline"
 
     @callback
     def stop_serial_read(self, event):
@@ -117,6 +119,7 @@ class ZonesSensor(SensorEntity):
         self.data = data
         self.set_deice_class()
         self._serial_loop_task = None
+        self.prev_state = None
 
 
     async def async_added_to_hass(self):
@@ -126,26 +129,27 @@ class ZonesSensor(SensorEntity):
         )
         
     async def sensorUpdate(self, **kwargs):
-        msg = decode_message(self._serialSensor._state)
-        #Zone Status
-        if str(msg[0]) == "F5" or str(msg[0]) == "F6":
-            if self.data == "DATE":
-                self._state = dt.utcnow().date()
-                self._icon = "mdi:calendar-month-outline"
-            if self.data == "TIME":
-                self._state = dt.utcnow()
-                self._icon = "mdi:clock-time-four-outline"
-            if self.data == "ZONE":
-                self._state = f'{msg[1]}: {self._zonelist["zones"][msg[1]]}'
-                self._icon = "mdi:pound-box-outline"
+        if self.prev_state != self._serialSensor._state:
+            msg = decode_message(self._serialSensor._state)
+            #Zone Status
+            if str(msg[0]) == "F5" or str(msg[0]) == "F6":
+                if self.data == "DATE":
+                    self._state = dt.utcnow().date()
+                    self._icon = "mdi:calendar-month-outline"
+                if self.data == "TIME":
+                    self._state = dt.utcnow()
+                    self._icon = "mdi:clock-time-four-outline"
+                if self.data == "ZONE":
+                    self._state = f'{msg[1]}: {self._zonelist["zones"][msg[1]]}'
+                    self._icon = "mdi:pound-box-outline"
 
-        if str(msg[0]) == "F5" and self.data == "STAT":
-            self._state = "Fault"
-            self._icon = "mdi:alarm-light-outline"
+            if str(msg[0]) == "F5" and self.data == "STAT":
+                self._state = "Fault"
+                self._icon = "mdi:alarm-light-outline"
 
-        if str(msg[0]) == "F6" and self.data == "STAT":
-            self._state = "Restore"
-            self._icon = "mdi:alarm-light-off-outline"
+            if str(msg[0]) == "F6" and self.data == "STAT":
+                self._state = "Restore"
+                self._icon = "mdi:alarm-light-off-outline"
 
     @callback
     def stop_serial_read(self, event):
@@ -191,7 +195,7 @@ class ArmSensor(SensorEntity):
         self.set_deice_class()
         self._serial_loop_task = None
         self.sensor = sensor
-
+        self.prev_state = None
 
     async def async_added_to_hass(self):
         """Handle when an entity is about to be added to Home Assistant."""
@@ -200,28 +204,29 @@ class ArmSensor(SensorEntity):
         )
         
     async def sensorUpdate(self, **kwargs):
-        msg = decode_message(self._serialSensor._state)
-        #Zone Status
-        if str(msg[0]) == "07" or str(msg[0]) == "08":
-            if self.data == "DATE":
-                self._state = str(dt.utcnow().date())
-                self._icon = "mdi:calendar-month-outline"
-            if self.data == "TIME":
-                self._state = str(dt.utcnow())
-                self._icon = "mdi:clock-time-four-outline"
-            if self.data == "USER":
-                self._state = msg[2]
-                self._icon = "mdi:account"
+        if self.prev_state != self._serialSensor._state:
+            msg = decode_message(self._serialSensor._state)
+            #Zone Status
+            if str(msg[0]) == "07" or str(msg[0]) == "08":
+                if self.data == "DATE":
+                    self._state = dt.utcnow().date()
+                    self._icon = "mdi:calendar-month-outline"
+                if self.data == "TIME":
+                    self._state = dt.utcnow()
+                    self._icon = "mdi:clock-time-four-outline"
+                if self.data == "USER":
+                    self._state = msg[2]
+                    self._icon = "mdi:account"
 
-        if str(msg[0]) == "07" and self.data == "STAT":
-            self._state = "Armed"
-            self.sensor.arm = "Armed"
-            self._icon = "mdi:lock"
+            if str(msg[0]) == "07" and self.data == "STAT":
+                self._state = "Armed"
+                self.sensor.arm = "Armed"
+                self._icon = "mdi:lock"
 
-        if str(msg[0]) == "08" and self.data == "STAT":
-            self._state = "Disarmed"
-            self.sensor.arm = "Disarmed"
-            self._icon = "mdi:lock-open"
+            if str(msg[0]) == "08" and self.data == "STAT":
+                self._state = "Disarmed"
+                self.sensor.arm = "Disarmed"
+                self._icon = "mdi:lock-open"
 
     @callback
     def stop_serial_read(self, event):
@@ -241,9 +246,9 @@ class ArmSensor(SensorEntity):
 
     def set_deice_class(self):
         if self.data == "DATE":
-            self._attr_device_class = None#SensorDeviceClass.DATE
+            self._attr_device_class = SensorDeviceClass.DATE
         elif self.data == "TIME":
-            self._attr_device_class = None#SensorDeviceClass.TIMESTAMP
+            self._attr_device_class = SensorDeviceClass.TIMESTAMP
         else:
             self._attr_device_class = None
 
