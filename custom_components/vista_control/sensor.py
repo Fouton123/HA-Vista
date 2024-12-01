@@ -73,6 +73,7 @@ class ZoneSensor(SensorEntity):
         
     async def sensorUpdate(self, **kwargs):
         if self.prev_state != self._serialSensor._state:
+            self.prev_state = self._serialSensor._state
             msg = decode_message(self._serialSensor._state)
             #Zone Status
             if str(msg[0]) == "F5" and str(msg[1]) == self._zone_id:
@@ -130,6 +131,7 @@ class ZonesSensor(SensorEntity):
         
     async def sensorUpdate(self, **kwargs):
         if self.prev_state != self._serialSensor._state:
+            self.prev_state = self._serialSensor._state
             msg = decode_message(self._serialSensor._state)
             #Zone Status
             if str(msg[0]) == "F5" or str(msg[0]) == "F6":
@@ -205,6 +207,7 @@ class ArmSensor(SensorEntity):
         
     async def sensorUpdate(self, **kwargs):
         if self.prev_state != self._serialSensor._state:
+            self.prev_state = self._serialSensor._state
             msg = decode_message(self._serialSensor._state)
             #Zone Status
             if str(msg[0]) == "07" or str(msg[0]) == "08":
