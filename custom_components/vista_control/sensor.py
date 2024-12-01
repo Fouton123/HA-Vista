@@ -21,7 +21,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(
     hass, config_entry, async_add_entities, discovery_info=None
-):
+): 
     
     base_path = Path(__file__).parent
     path = f'{base_path}/{SYSTEM_DATA}'
