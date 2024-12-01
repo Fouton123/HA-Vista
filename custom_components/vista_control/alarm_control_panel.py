@@ -33,11 +33,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
     """Representation of an Agent DVR Alarm Control Panel."""
 
     _attr_icon = ICON
-    _attr_supported_features = (
-        AlarmControlPanelEntityFeature.ARM_HOME
-        | AlarmControlPanelEntityFeature.ARM_AWAY
-        | AlarmControlPanelEntityFeature.ARM_NIGHT
-    )
+    _attr_supported_features = (AlarmControlPanelEntityFeature.ARM_AWAY)
     _attr_code_format = CodeFormat.NUMBER
     _attr_code_arm_required = True
     _attr_has_entity_name = True
