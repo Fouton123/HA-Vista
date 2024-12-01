@@ -1,11 +1,10 @@
-"""Support for Agent DVR Alarm Control Panels."""
-from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity, CodeFormat, AlarmControlPanelEntityFeature
-
-from homeassistant.const import (
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_DISARMED,
+from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.components.alarm_control_panel import (
+    AlarmControlPanelEntity,
+    AlarmControlPanelEntityFeature,
+    AlarmControlPanelState,
+    CodeFormat,
 )
-
 from .const import CONNECTION, DOMAIN
 from .helpers import calc_checksum, device_info
 
@@ -15,7 +14,9 @@ import logging
 _LOGGER = logging.getLogger(__name__)
 ICON = "mdi:security"
 
+CONF_HOME_MODE_NAME = "home"
 CONF_AWAY_MODE_NAME = "away"
+
 SYSTEM_DATA = "data.json"
 CONST_ALARM_CONTROL_PANEL_NAME = "Alarm Panel"
 
@@ -32,8 +33,15 @@ class vistaBaseStation(AlarmControlPanelEntity):
     """Representation of an Agent DVR Alarm Control Panel."""
 
     _attr_icon = ICON
-    _attr_supported_features = (AlarmControlPanelEntityFeature.ARM_AWAY)
+    _attr_supported_features = (
+        AlarmControlPanelEntityFeature.ARM_HOME
+        | AlarmControlPanelEntityFeature.ARM_AWAY
+        | AlarmControlPanelEntityFeature.ARM_NIGHT
+    )
     _attr_code_format = CodeFormat.NUMBER
+    _attr_code_arm_required = True
+    _attr_has_entity_name = True
+    _attr_name = None
 
     def __init__(self, serial):
         """Initialize the alarm control panel."""
@@ -46,14 +54,14 @@ class vistaBaseStation(AlarmControlPanelEntity):
         path = f'{base_path}/{SYSTEM_DATA}'
         f = open (path, "r")
         self.sys_data = json.loads(f.read())
-
+        self._attr_state = AlarmControlPanelState.DISARMED
 
     async def async_update(self):
         """Update the state of the device."""
         if self.serial_client.arm == "Disarmed":
-            self._attr_state = STATE_ALARM_DISARMED
+            self._attr_state = AlarmControlPanelState.DISARMED
         elif self.serial_client.arm == "Armed":
-            self._attr_state = STATE_ALARM_ARMED_AWAY
+            self._attr_state = AlarmControlPanelState.ARMED_AWAY
         else:
             self._attr_state = self._attr_state
         #await self.serial_client.update()
