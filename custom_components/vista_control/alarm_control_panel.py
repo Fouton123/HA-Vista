@@ -50,32 +50,34 @@ class vistaBaseStation(AlarmControlPanelEntity):
         path = f'{base_path}/{SYSTEM_DATA}'
         f = open (path, "r")
         self.sys_data = json.loads(f.read())
-        self._attr_alarm_state  = AlarmControlPanelState.DISARMED
+        self._alarm_state  = AlarmControlPanelState.DISARMED
 
     async def async_update(self):
         """Update the state of the device."""
         if self.serial_client.arm == "Disarmed":
-            self._attr_alarm_state  = AlarmControlPanelState.DISARMED
+            self._alarm_state  = AlarmControlPanelState.DISARMED
         elif self.serial_client.arm == "Armed":
-            self._attr_alarm_state  = AlarmControlPanelState.ARMED_AWAY
+            self._alarm_state  = AlarmControlPanelState.ARMED_AWAY
         else:
-            self._attr_alarm_state  = self._attr_alarm_state 
+            self._alarm_state  = self._alarm_state 
+            
+        return self._alarm_state
         #await self.serial_client.update()
         #self._attr_available = self.serial_client.is_available
         #armed = self.serial_client.is_armed
         #if armed is None:
-        #    self._attr_alarm_state  = None
+        #    self._alarm_state  = None
         #    return
         #if armed:
-        #    self._attr_alarm_state  = STATE_ALARM_ARMED_AWAY
+        #    self._alarm_state  = STATE_ALARM_ARMED_AWAY
         #else:
-        #    self._attr_alarm_state  = STATE_ALARM_DISARMED
+        #    self._alarm_state  = STATE_ALARM_DISARMED
 
     async def async_alarm_disarm(self, code=None):
         """Send disarm command."""
         #await self.serial_client.disarm()
         if len(code) != 4:
-            self._attr_alarm_state  = self._attr_alarm_state 
+            self._alarm_state  = self._alarm_state 
             _LOGGER.warn(f'incorrect code length')
         else:
             try:
@@ -91,7 +93,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         """Send arm away command. Uses custom mode."""
         #await self.serial_client.disarm()
         if len(code) != 4:
-            self._attr_alarm_state  = self._attr_alarm_state 
+            self._alarm_state  = self._alarm_state 
             _LOGGER.warn(f'incorrect code length')
         else:
             try:
