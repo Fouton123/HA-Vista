@@ -2,11 +2,15 @@ import voluptuous as vol
 import secrets
 
 from homeassistant import config_entries
-from homeassistant.const import CONF_IP_ADDRESS, CONF_PORT, CONF_BROADCAST_PORT
+from homeassistant.const import CONF_PORT
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .serial import SerialComm
+from .helpers import list_ports
 from .const import DOMAIN
+
+DEFAULT_PORT = 8090
+
 
 class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle an Agent config flow."""
@@ -20,11 +24,9 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
-            ip_address = user_input[CONF_IP_ADDRESS]
-            port = user_input[CONF_PORT]
-            rport = user_input[CONF_BROADCAST_PORT]
+            serial_port = user_input[CONF_PORT]
 
-            serial_client = SerialComm(ip_address, port, rport)
+            serial_client = SerialComm(serial_port)
             if serial_client.exists():
                 # Only a single instance of the integration
                 if self._async_current_entries():
@@ -35,16 +37,12 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
                 self._abort_if_unique_id_configured(
                     updates={
-                        ip_address: user_input[CONF_IP_ADDRESS],
-                        port: user_input[CONF_PORT],
-                        rport: user_input[CONF_BROADCAST_PORT],
+                        serial_port: user_input[CONF_PORT],
                     }
                 )
 
                 self.device_config = {
-                    CONF_IP_ADDRESS: ip_address,
-                    CONF_PORT: port,
-                    CONF_BROADCAST_PORT: rport,
+                    CONF_PORT: serial_port,
                 }
 
                 return await self._create_entry('Vista Control')
@@ -52,13 +50,12 @@ class AgentFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "port_not_found"
 
         data = {
-            vol.Required(CONF_IP_ADDRESS): str,
-            vol.Required(CONF_PORT): str,
-            vol.Required(CONF_BROADCAST_PORT): str,
+            vol.Required(CONF_PORT): vol.In(list_ports()),
         }
 
         return self.async_show_form(
             step_id="user",
+            description_placeholders=self.device_config,
             data_schema=vol.Schema(data),
             errors=errors,
         )
