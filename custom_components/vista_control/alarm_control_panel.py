@@ -50,38 +50,34 @@ class vistaBaseStation(AlarmControlPanelEntity):
         path = f'{base_path}/{SYSTEM_DATA}'
         f = open (path, "r")
         self.sys_data = json.loads(f.read())
-        self._alarm_state  = AlarmControlPanelState.DISARMED
+        self.alarm_state  = AlarmControlPanelState.DISARMED
 
-    @property
-    async def alarm_state(self):
-        return self._alarm_state
-    
     async def async_update(self):
         """Update the state of the device."""
         if self.serial_client.arm == "Disarmed":
-            self._alarm_state  = AlarmControlPanelState.DISARMED
+            self.alarm_state  = AlarmControlPanelState.DISARMED
         elif self.serial_client.arm == "Armed":
-            self._alarm_state  = AlarmControlPanelState.ARMED_AWAY
+            self.alarm_state  = AlarmControlPanelState.ARMED_AWAY
         else:
-            self._alarm_state  = self._alarm_state 
+            self.alarm_state  = self.alarm_state 
 
-        return self._alarm_state
+        return self.alarm_state
         #await self.serial_client.update()
         #self._attr_available = self.serial_client.is_available
         #armed = self.serial_client.is_armed
         #if armed is None:
-        #    self._alarm_state  = None
+        #    self.alarm_state  = None
         #    return
         #if armed:
-        #    self._alarm_state  = STATE_ALARM_ARMED_AWAY
+        #    self.alarm_state  = STATE_ALARM_ARMED_AWAY
         #else:
-        #    self._alarm_state  = STATE_ALARM_DISARMED
+        #    self.alarm_state  = STATE_ALARM_DISARMED
 
     async def async_alarm_disarm(self, code=None):
         """Send disarm command."""
         #await self.serial_client.disarm()
         if len(code) != 4:
-            self._alarm_state  = self._alarm_state 
+            self.alarm_state  = self.alarm_state 
             _LOGGER.warn(f'incorrect code length')
         else:
             try:
@@ -97,7 +93,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
         """Send arm away command. Uses custom mode."""
         #await self.serial_client.disarm()
         if len(code) != 4:
-            self._alarm_state  = self._alarm_state 
+            self.alarm_state  = self.alarm_state 
             _LOGGER.warn(f'incorrect code length')
         else:
             try:
