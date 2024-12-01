@@ -165,9 +165,9 @@ class ZonesSensor(SensorEntity):
 
     def set_deice_class(self):
         if self.data == "DATE":
-            self._attr_device_class = SensorDeviceClass.DATE
+            self._attr_device_class = None#SensorDeviceClass.DATE
         elif self.data == "TIME":
-            self._attr_device_class = SensorDeviceClass.TIMESTAMP
+            self._attr_device_class = None#SensorDeviceClass.TIMESTAMP
         else:
             self._attr_device_class = None
 
