@@ -52,6 +52,10 @@ class vistaBaseStation(AlarmControlPanelEntity):
         self.sys_data = json.loads(f.read())
         self._alarm_state  = AlarmControlPanelState.DISARMED
 
+    @property
+    async def alarm_state(self):
+        return self._alarm_state
+    
     async def async_update(self):
         """Update the state of the device."""
         if self.serial_client.arm == "Disarmed":
@@ -60,7 +64,7 @@ class vistaBaseStation(AlarmControlPanelEntity):
             self._alarm_state  = AlarmControlPanelState.ARMED_AWAY
         else:
             self._alarm_state  = self._alarm_state 
-            
+
         return self._alarm_state
         #await self.serial_client.update()
         #self._attr_available = self.serial_client.is_available
